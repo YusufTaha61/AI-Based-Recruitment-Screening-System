@@ -1,0 +1,5 @@
+uploads/*
+!uploads/.gitkeep
+*.sqlite
+ml/.venv/
+__pycache__/
