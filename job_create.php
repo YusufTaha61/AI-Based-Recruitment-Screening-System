@@ -1,0 +1,34 @@
+<?php
+require __DIR__ . '/includes/db.php';
+require __DIR__ . '/includes/auth.php';
+requireLogin();
+
+$error = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $title = trim($_POST['title'] ?? '');
+    $description = trim($_POST['description'] ?? '');
+    $requirements = trim($_POST['requirements'] ?? '');
+
+    if ($title === '' || $description === '' || $requirements === '') {
+        $error = 'Please fill in all fields.';
+    } else {
+        $stmt = $db->prepare('INSERT INTO jobs (user_id, title, description, requirements) VALUES (?, ?, ?, ?)');
+        $stmt->execute([currentUser()['id'], $title, $description, $requirements]);
+        header('Location: index.php');
+        exit;
+    }
+}
+
+$pageTitle = 'New Job';
+require __DIR__ . '/includes/header.php';
+?>
+<h1>New Job Posting</h1>
+<?php if ($error): ?><p style="color:red"><?= htmlspecialchars($error) ?></p><?php endif; ?>
+<form method="post">
+    <p><label>Title<br><input type="text" name="title" required></label></p>
+    <p><label>Description<br><textarea name="description" rows="5" cols="50" required></textarea></label></p>
+    <p><label>Requirements (skills, experience)<br><textarea name="requirements" rows="4" cols="50" required></textarea></label></p>
+    <button type="submit">Publish</button>
+</form>
+<?php require __DIR__ . '/includes/footer.php'; ?>
