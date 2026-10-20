@@ -1,0 +1,6 @@
+Ahmet Yilmaz
+Bachelor of Computer Engineering
+
+5 years of experience as a backend developer.
+Skills: Python, PHP, Laravel, SQL, MySQL, Docker, Git, Linux.
+Worked on REST APIs and data pipelines. Good communication and teamwork.
