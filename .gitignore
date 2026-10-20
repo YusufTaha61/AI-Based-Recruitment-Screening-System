@@ -3,3 +3,4 @@ uploads/*
 *.sqlite
 ml/.venv/
 __pycache__/
+ml/model.joblib
