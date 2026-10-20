@@ -1,5 +1,6 @@
 <?php
 require __DIR__ . '/includes/db.php';
+require __DIR__ . '/includes/ml.php';
 
 $jobId = (int) ($_GET['job_id'] ?? 0);
 $stmt = $db->prepare('SELECT * FROM jobs WHERE id = ?');
@@ -32,10 +33,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = 'File is too large (max 5 MB).';
     } else {
         $fileName = uniqid('cv_', true) . '.' . $ext;
-        move_uploaded_file($file['tmp_name'], __DIR__ . '/uploads/' . $fileName);
+        $filePath = __DIR__ . '/uploads/' . $fileName;
+        move_uploaded_file($file['tmp_name'], $filePath);
 
-        $insert = $db->prepare('INSERT INTO applications (job_id, name, email, cv_path) VALUES (?, ?, ?, ?)');
-        $insert->execute([$jobId, $name, $email, $fileName]);
+        // Read the CV and let the ML model score it against the job requirements
+        $cvText = extractCvText($filePath);
+        $result = $cvText !== '' ? scoreCv($cvText, $job['requirements']) : null;
+        $score = $result['score'] ?? null;
+
+        $insert = $db->prepare('INSERT INTO applications (job_id, name, email, cv_path, cv_text, score) VALUES (?, ?, ?, ?, ?, ?)');
+        $insert->execute([$jobId, $name, $email, $fileName, $cvText, $score]);
         $success = true;
     }
 }
