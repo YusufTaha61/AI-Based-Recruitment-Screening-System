@@ -52,14 +52,15 @@ require __DIR__ . '/includes/header.php';
 ?>
 <h1>Başvuru: <?= htmlspecialchars($job['title']) ?></h1>
 <?php if ($success): ?>
-    <p style="color:green">Başvurunuz alındı. Teşekkür ederiz!</p>
+    <p class="alert alert-success">Başvurunuz alındı. Teşekkür ederiz!</p>
 <?php else: ?>
-    <?php if ($error): ?><p style="color:red"><?= htmlspecialchars($error) ?></p><?php endif; ?>
-    <form method="post" enctype="multipart/form-data">
-        <p><label>Ad Soyad<br><input type="text" name="name" required></label></p>
-        <p><label>E-posta<br><input type="email" name="email" required></label></p>
-        <p><label>CV (PDF veya TXT, en fazla 5 MB)<br><input type="file" name="cv" accept=".pdf,.txt" required></label></p>
-        <button type="submit">Başvuruyu Gönder</button>
+    <?php if ($error): ?><p class="alert alert-error"><?= htmlspecialchars($error) ?></p><?php endif; ?>
+    <form class="form card" method="post" enctype="multipart/form-data">
+        <p><label>Ad Soyad<input type="text" name="name" required></label></p>
+        <p><label>E-posta<input type="email" name="email" required></label></p>
+        <p><label>CV (PDF veya TXT, en fazla 5 MB)<input type="file" name="cv" accept=".pdf,.txt" required></label></p>
+        <button class="btn" type="submit">Başvuruyu Gönder</button>
     </form>
 <?php endif; ?>
+<p><a href="index.php">&larr; İlanlara dön</a></p>
 <?php require __DIR__ . '/includes/footer.php'; ?>

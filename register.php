@@ -30,11 +30,12 @@ $pageTitle = 'Kayıt Ol';
 require __DIR__ . '/includes/header.php';
 ?>
 <h1>Kayıt Ol</h1>
-<?php if ($error): ?><p style="color:red"><?= htmlspecialchars($error) ?></p><?php endif; ?>
-<form method="post">
-    <p><label>Ad Soyad<br><input type="text" name="name" required></label></p>
-    <p><label>E-posta<br><input type="email" name="email" required></label></p>
-    <p><label>Şifre<br><input type="password" name="password" minlength="6" required></label></p>
-    <button type="submit">Kayıt Ol</button>
+<?php if ($error): ?><p class="alert alert-error"><?= htmlspecialchars($error) ?></p><?php endif; ?>
+<form class="form card" method="post">
+    <p><label>Ad Soyad<input type="text" name="name" required></label></p>
+    <p><label>E-posta<input type="email" name="email" required></label></p>
+    <p><label>Şifre<input type="password" name="password" minlength="6" required></label></p>
+    <button class="btn" type="submit">Kayıt Ol</button>
 </form>
+<p class="muted">Zaten hesabın var mı? <a href="login.php">Giriş yap</a></p>
 <?php require __DIR__ . '/includes/footer.php'; ?>

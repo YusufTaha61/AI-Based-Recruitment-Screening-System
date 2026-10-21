@@ -25,10 +25,11 @@ $pageTitle = 'Giriş Yap';
 require __DIR__ . '/includes/header.php';
 ?>
 <h1>Giriş Yap</h1>
-<?php if ($error): ?><p style="color:red"><?= htmlspecialchars($error) ?></p><?php endif; ?>
-<form method="post">
-    <p><label>E-posta<br><input type="email" name="email" required></label></p>
-    <p><label>Şifre<br><input type="password" name="password" required></label></p>
-    <button type="submit">Giriş Yap</button>
+<?php if ($error): ?><p class="alert alert-error"><?= htmlspecialchars($error) ?></p><?php endif; ?>
+<form class="form card" method="post">
+    <p><label>E-posta<input type="email" name="email" required></label></p>
+    <p><label>Şifre<input type="password" name="password" required></label></p>
+    <button class="btn" type="submit">Giriş Yap</button>
 </form>
+<p class="muted">Hesabın yok mu? <a href="register.php">Kayıt ol</a></p>
 <?php require __DIR__ . '/includes/footer.php'; ?>
