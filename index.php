@@ -9,24 +9,24 @@ $jobs = $db->query(
 
 $user = currentUser();
 
-$pageTitle = 'Job Listings';
+$pageTitle = 'İş İlanları';
 require __DIR__ . '/includes/header.php';
 ?>
-<h1>Job Listings</h1>
+<h1>İş İlanları</h1>
 <?php if (!$jobs): ?>
-    <p>No job postings yet.</p>
+    <p>Henüz ilan yok.</p>
 <?php endif; ?>
 <?php foreach ($jobs as $job): ?>
     <div class="card job">
         <h2><?= htmlspecialchars($job['title']) ?></h2>
-        <p class="muted">Posted on <?= htmlspecialchars(substr($job['created_at'], 0, 10)) ?></p>
+        <p class="muted">Yayın tarihi: <?= date('d.m.Y', strtotime($job['created_at'])) ?></p>
         <p><?= nl2br(htmlspecialchars($job['description'])) ?></p>
-        <p><strong>Requirements:</strong> <?= nl2br(htmlspecialchars($job['requirements'])) ?></p>
+        <p><strong>Aranan nitelikler:</strong> <?= nl2br(htmlspecialchars($job['requirements'])) ?></p>
         <div class="actions">
-            <a class="btn" href="apply.php?job_id=<?= (int) $job['id'] ?>">Apply</a>
+            <a class="btn" href="apply.php?job_id=<?= (int) $job['id'] ?>">Başvur</a>
             <?php if ($user && (int) $user['id'] === (int) $job['user_id']): ?>
                 <a class="btn btn-outline" href="applicants.php?job_id=<?= (int) $job['id'] ?>">
-                    Applicants (<?= (int) $job['applicant_count'] ?>)
+                    Başvuranlar (<?= (int) $job['applicant_count'] ?>)
                 </a>
             <?php endif; ?>
         </div>

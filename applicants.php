@@ -12,7 +12,7 @@ $job = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$job) {
     http_response_code(404);
-    exit('Job not found.');
+    exit('İlan bulunamadı.');
 }
 
 // Best candidates first, applications without a score at the end
@@ -23,19 +23,19 @@ $stmt = $db->prepare(
 $stmt->execute([$jobId]);
 $applications = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-$pageTitle = 'Applicants - ' . $job['title'];
+$pageTitle = 'Başvuranlar - ' . $job['title'];
 require __DIR__ . '/includes/header.php';
 ?>
-<h1>Applicants: <?= htmlspecialchars($job['title']) ?></h1>
-<p class="muted">Ranked by the model's match score.</p>
+<h1>Başvuranlar: <?= htmlspecialchars($job['title']) ?></h1>
+<p class="muted">Modelin verdiği uyum puanına göre sıralanmıştır.</p>
 
 <?php if (!$applications): ?>
-    <p>No applications yet.</p>
+    <p>Henüz başvuru yok.</p>
 <?php else: ?>
     <div class="table-wrap">
         <table>
             <thead>
-                <tr><th>#</th><th>Name</th><th>Email</th><th>Score</th><th>Applied</th><th></th></tr>
+                <tr><th>#</th><th>Ad Soyad</th><th>E-posta</th><th>Puan</th><th>Tarih</th><th></th></tr>
             </thead>
             <tbody>
             <?php foreach ($applications as $i => $app): ?>
@@ -44,13 +44,13 @@ require __DIR__ . '/includes/header.php';
                     <td><?= htmlspecialchars($app['name']) ?></td>
                     <td><?= htmlspecialchars($app['email']) ?></td>
                     <td><?= scoreBadge($app['score'] === null ? null : (float) $app['score']) ?></td>
-                    <td><?= htmlspecialchars(substr($app['created_at'], 0, 10)) ?></td>
-                    <td><a href="application.php?id=<?= (int) $app['id'] ?>">Details</a></td>
+                    <td><?= date('d.m.Y', strtotime($app['created_at'])) ?></td>
+                    <td><a href="application.php?id=<?= (int) $app['id'] ?>">Detay</a></td>
                 </tr>
             <?php endforeach; ?>
             </tbody>
         </table>
     </div>
 <?php endif; ?>
-<p><a href="index.php">&larr; Back to jobs</a></p>
+<p><a href="index.php">&larr; İlanlara dön</a></p>
 <?php require __DIR__ . '/includes/footer.php'; ?>

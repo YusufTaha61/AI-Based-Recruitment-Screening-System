@@ -14,7 +14,7 @@ function scoreLevel(?float $score): string
 
 function scoreBadge(?float $score): string
 {
-    $text = $score === null ? 'Not scored' : number_format($score, 1) . '%';
+    $text = $score === null ? 'Puanlanmadı' : '%' . number_format($score, 1, ',', '');
     return '<span class="badge badge-' . scoreLevel($score) . '">' . $text . '</span>';
 }
 
@@ -27,5 +27,5 @@ function parseSkills(string $requirements): array
 
 function educationLabel(int $level): string
 {
-    return ['Not found', 'Bachelor', 'Master', 'PhD'][$level] ?? 'Not found';
+    return ['Bulunamadı', 'Lisans', 'Yüksek Lisans', 'Doktora'][$level] ?? 'Bulunamadı';
 }

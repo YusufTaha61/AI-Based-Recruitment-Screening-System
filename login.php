@@ -18,17 +18,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header('Location: index.php');
         exit;
     }
-    $error = 'Wrong email or password.';
+    $error = 'E-posta veya şifre hatalı.';
 }
 
-$pageTitle = 'Login';
+$pageTitle = 'Giriş Yap';
 require __DIR__ . '/includes/header.php';
 ?>
-<h1>Login</h1>
+<h1>Giriş Yap</h1>
 <?php if ($error): ?><p style="color:red"><?= htmlspecialchars($error) ?></p><?php endif; ?>
 <form method="post">
-    <p><label>Email<br><input type="email" name="email" required></label></p>
-    <p><label>Password<br><input type="password" name="password" required></label></p>
-    <button type="submit">Login</button>
+    <p><label>E-posta<br><input type="email" name="email" required></label></p>
+    <p><label>Şifre<br><input type="password" name="password" required></label></p>
+    <button type="submit">Giriş Yap</button>
 </form>
 <?php require __DIR__ . '/includes/footer.php'; ?>

@@ -9,7 +9,7 @@ $job = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$job) {
     http_response_code(404);
-    exit('Job not found.');
+    exit('İlan bulunamadı.');
 }
 
 $error = '';
@@ -24,13 +24,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $ext = $file ? strtolower(pathinfo($file['name'], PATHINFO_EXTENSION)) : '';
 
     if ($name === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $error = 'Please enter your name and a valid email.';
+        $error = 'Lütfen adınızı ve geçerli bir e-posta adresi girin.';
     } elseif (!$file || $file['error'] !== UPLOAD_ERR_OK) {
-        $error = 'Please choose a CV file.';
+        $error = 'Lütfen bir CV dosyası seçin.';
     } elseif (!in_array($ext, $allowed, true)) {
-        $error = 'Only PDF and TXT files are allowed.';
+        $error = 'Sadece PDF ve TXT dosyaları yüklenebilir.';
     } elseif ($file['size'] > $maxSize) {
-        $error = 'File is too large (max 5 MB).';
+        $error = 'Dosya çok büyük (en fazla 5 MB).';
     } else {
         $fileName = uniqid('cv_', true) . '.' . $ext;
         $filePath = __DIR__ . '/uploads/' . $fileName;
@@ -47,19 +47,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-$pageTitle = 'Apply - ' . $job['title'];
+$pageTitle = 'Başvuru - ' . $job['title'];
 require __DIR__ . '/includes/header.php';
 ?>
-<h1>Apply: <?= htmlspecialchars($job['title']) ?></h1>
+<h1>Başvuru: <?= htmlspecialchars($job['title']) ?></h1>
 <?php if ($success): ?>
-    <p style="color:green">Your application has been received. Thank you!</p>
+    <p style="color:green">Başvurunuz alındı. Teşekkür ederiz!</p>
 <?php else: ?>
     <?php if ($error): ?><p style="color:red"><?= htmlspecialchars($error) ?></p><?php endif; ?>
     <form method="post" enctype="multipart/form-data">
-        <p><label>Full name<br><input type="text" name="name" required></label></p>
-        <p><label>Email<br><input type="email" name="email" required></label></p>
-        <p><label>CV (PDF or TXT, max 5 MB)<br><input type="file" name="cv" accept=".pdf,.txt" required></label></p>
-        <button type="submit">Send application</button>
+        <p><label>Ad Soyad<br><input type="text" name="name" required></label></p>
+        <p><label>E-posta<br><input type="email" name="email" required></label></p>
+        <p><label>CV (PDF veya TXT, en fazla 5 MB)<br><input type="file" name="cv" accept=".pdf,.txt" required></label></p>
+        <button type="submit">Başvuruyu Gönder</button>
     </form>
 <?php endif; ?>
 <?php require __DIR__ . '/includes/footer.php'; ?>
