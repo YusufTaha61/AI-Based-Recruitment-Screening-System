@@ -4,3 +4,4 @@ uploads/*
 ml/.venv/
 __pycache__/
 ml/model.joblib
+ml/models/*.joblib
