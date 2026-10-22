@@ -1,0 +1,816 @@
+{
+  "created": "22.10.2026 21:59",
+  "sklearn": "1.9.1",
+  "candidates": 2000,
+  "features": [
+    "education_level",
+    "years_experience",
+    "technical_skill",
+    "communication_skill",
+    "job_stability"
+  ],
+  "levels": {
+    "intern": {
+      "name": "Stajyer",
+      "years": [
+        0,
+        1
+      ]
+    },
+    "junior": {
+      "name": "Yeni Mezun (Junior)",
+      "years": [
+        0,
+        2
+      ]
+    },
+    "mid": {
+      "name": "Deneyimli (Orta Seviye)",
+      "years": [
+        2,
+        8
+      ]
+    },
+    "senior": {
+      "name": "Kıdemli (Senior)",
+      "years": [
+        8,
+        20
+      ]
+    }
+  },
+  "positions": {
+    "general": {
+      "name": "Genel Pozisyon",
+      "levels": {
+        "intern": {
+          "weights": {
+            "education_level": 0.2913,
+            "years_experience": 0.0777,
+            "technical_skill": 0.3786,
+            "communication_skill": 0.2524,
+            "job_stability": 0.0
+          },
+          "train_size": 1600,
+          "test_size": 400,
+          "random_forest": {
+            "accuracy": 0.8525,
+            "precision": 0.824,
+            "recall": 0.7357,
+            "f1": 0.7774
+          },
+          "logistic_regression": {
+            "accuracy": 0.8525,
+            "precision": 0.8189,
+            "recall": 0.7429,
+            "f1": 0.779
+          },
+          "cross_validation": {
+            "mean": 0.8665,
+            "std": 0.0068
+          },
+          "confusion": {
+            "tn": 238,
+            "fp": 22,
+            "fn": 37,
+            "tp": 103
+          },
+          "importance": [
+            0.1771,
+            0.0439,
+            0.4783,
+            0.273,
+            0.0277
+          ],
+          "average": [
+            1.154,
+            0.483,
+            65.489,
+            65.25,
+            0.591
+          ]
+        },
+        "junior": {
+          "weights": {
+            "education_level": 0.2388,
+            "years_experience": 0.1393,
+            "technical_skill": 0.3582,
+            "communication_skill": 0.2189,
+            "job_stability": 0.0448
+          },
+          "train_size": 1600,
+          "test_size": 400,
+          "random_forest": {
+            "accuracy": 0.87,
+            "precision": 0.8607,
+            "recall": 0.75,
+            "f1": 0.8015
+          },
+          "logistic_regression": {
+            "accuracy": 0.89,
+            "precision": 0.875,
+            "recall": 0.8,
+            "f1": 0.8358
+          },
+          "cross_validation": {
+            "mean": 0.8755,
+            "std": 0.0126
+          },
+          "confusion": {
+            "tn": 243,
+            "fp": 17,
+            "fn": 35,
+            "tp": 105
+          },
+          "importance": [
+            0.2445,
+            0.0939,
+            0.4039,
+            0.1927,
+            0.065
+          ],
+          "average": [
+            1.296,
+            1.022,
+            66.064,
+            65.382,
+            0.911
+          ]
+        },
+        "mid": {
+          "weights": {
+            "education_level": 0.15,
+            "years_experience": 0.2,
+            "technical_skill": 0.3,
+            "communication_skill": 0.2,
+            "job_stability": 0.15
+          },
+          "train_size": 1600,
+          "test_size": 400,
+          "random_forest": {
+            "accuracy": 0.825,
+            "precision": 0.7869,
+            "recall": 0.6857,
+            "f1": 0.7328
+          },
+          "logistic_regression": {
+            "accuracy": 0.855,
+            "precision": 0.8306,
+            "recall": 0.7357,
+            "f1": 0.7803
+          },
+          "cross_validation": {
+            "mean": 0.862,
+            "std": 0.0188
+          },
+          "confusion": {
+            "tn": 234,
+            "fp": 26,
+            "fn": 44,
+            "tp": 96
+          },
+          "importance": [
+            0.1273,
+            0.2794,
+            0.2994,
+            0.1545,
+            0.1394
+          ],
+          "average": [
+            1.471,
+            4.974,
+            66.584,
+            64.584,
+            2.668
+          ]
+        },
+        "senior": {
+          "weights": {
+            "education_level": 0.0714,
+            "years_experience": 0.2286,
+            "technical_skill": 0.2857,
+            "communication_skill": 0.2286,
+            "job_stability": 0.1857
+          },
+          "train_size": 1600,
+          "test_size": 400,
+          "random_forest": {
+            "accuracy": 0.8625,
+            "precision": 0.8244,
+            "recall": 0.7714,
+            "f1": 0.797
+          },
+          "logistic_regression": {
+            "accuracy": 0.88,
+            "precision": 0.8333,
+            "recall": 0.8214,
+            "f1": 0.8273
+          },
+          "cross_validation": {
+            "mean": 0.8725,
+            "std": 0.014
+          },
+          "confusion": {
+            "tn": 237,
+            "fp": 23,
+            "fn": 32,
+            "tp": 108
+          },
+          "importance": [
+            0.0477,
+            0.3454,
+            0.2971,
+            0.1442,
+            0.1656
+          ],
+          "average": [
+            1.604,
+            14.051,
+            66.269,
+            65.156,
+            5.017
+          ]
+        }
+      }
+    },
+    "software": {
+      "name": "Yazılım Geliştirici",
+      "levels": {
+        "intern": {
+          "weights": {
+            "education_level": 0.201,
+            "years_experience": 0.0804,
+            "technical_skill": 0.5879,
+            "communication_skill": 0.1307,
+            "job_stability": 0.0
+          },
+          "train_size": 1600,
+          "test_size": 400,
+          "random_forest": {
+            "accuracy": 0.8925,
+            "precision": 0.8593,
+            "recall": 0.8286,
+            "f1": 0.8436
+          },
+          "logistic_regression": {
+            "accuracy": 0.91,
+            "precision": 0.8824,
+            "recall": 0.8571,
+            "f1": 0.8696
+          },
+          "cross_validation": {
+            "mean": 0.888,
+            "std": 0.0184
+          },
+          "confusion": {
+            "tn": 241,
+            "fp": 19,
+            "fn": 24,
+            "tp": 116
+          },
+          "importance": [
+            0.076,
+            0.035,
+            0.7478,
+            0.1284,
+            0.0127
+          ],
+          "average": [
+            1.169,
+            0.507,
+            65.761,
+            64.95,
+            0.593
+          ]
+        },
+        "junior": {
+          "weights": {
+            "education_level": 0.1608,
+            "years_experience": 0.1407,
+            "technical_skill": 0.5427,
+            "communication_skill": 0.1106,
+            "job_stability": 0.0452
+          },
+          "train_size": 1600,
+          "test_size": 400,
+          "random_forest": {
+            "accuracy": 0.8925,
+            "precision": 0.8702,
+            "recall": 0.8143,
+            "f1": 0.8413
+          },
+          "logistic_regression": {
+            "accuracy": 0.905,
+            "precision": 0.8696,
+            "recall": 0.8571,
+            "f1": 0.8633
+          },
+          "cross_validation": {
+            "mean": 0.878,
+            "std": 0.0216
+          },
+          "confusion": {
+            "tn": 243,
+            "fp": 17,
+            "fn": 26,
+            "tp": 114
+          },
+          "importance": [
+            0.0721,
+            0.0844,
+            0.6801,
+            0.1025,
+            0.0609
+          ],
+          "average": [
+            1.284,
+            1.005,
+            65.641,
+            65.239,
+            0.913
+          ]
+        },
+        "mid": {
+          "weights": {
+            "education_level": 0.1,
+            "years_experience": 0.2,
+            "technical_skill": 0.45,
+            "communication_skill": 0.1,
+            "job_stability": 0.15
+          },
+          "train_size": 1600,
+          "test_size": 400,
+          "random_forest": {
+            "accuracy": 0.8725,
+            "precision": 0.8504,
+            "recall": 0.7714,
+            "f1": 0.809
+          },
+          "logistic_regression": {
+            "accuracy": 0.88,
+            "precision": 0.8594,
+            "recall": 0.7857,
+            "f1": 0.8209
+          },
+          "cross_validation": {
+            "mean": 0.8715,
+            "std": 0.0108
+          },
+          "confusion": {
+            "tn": 241,
+            "fp": 19,
+            "fn": 32,
+            "tp": 108
+          },
+          "importance": [
+            0.0623,
+            0.2282,
+            0.4864,
+            0.0893,
+            0.1338
+          ],
+          "average": [
+            1.464,
+            5.011,
+            65.524,
+            64.709,
+            2.707
+          ]
+        },
+        "senior": {
+          "weights": {
+            "education_level": 0.0474,
+            "years_experience": 0.2275,
+            "technical_skill": 0.4265,
+            "communication_skill": 0.1137,
+            "job_stability": 0.1848
+          },
+          "train_size": 1600,
+          "test_size": 400,
+          "random_forest": {
+            "accuracy": 0.895,
+            "precision": 0.9083,
+            "recall": 0.7786,
+            "f1": 0.8385
+          },
+          "logistic_regression": {
+            "accuracy": 0.905,
+            "precision": 0.8864,
+            "recall": 0.8357,
+            "f1": 0.8603
+          },
+          "cross_validation": {
+            "mean": 0.8795,
+            "std": 0.0103
+          },
+          "confusion": {
+            "tn": 249,
+            "fp": 11,
+            "fn": 31,
+            "tp": 109
+          },
+          "importance": [
+            0.0184,
+            0.3029,
+            0.4384,
+            0.0713,
+            0.169
+          ],
+          "average": [
+            1.588,
+            14.103,
+            66.568,
+            64.729,
+            5.027
+          ]
+        }
+      }
+    },
+    "sales": {
+      "name": "Satış / Müşteri İlişkileri",
+      "levels": {
+        "intern": {
+          "weights": {
+            "education_level": 0.1117,
+            "years_experience": 0.0894,
+            "technical_skill": 0.1453,
+            "communication_skill": 0.6536,
+            "job_stability": 0.0
+          },
+          "train_size": 1600,
+          "test_size": 400,
+          "random_forest": {
+            "accuracy": 0.8675,
+            "precision": 0.8085,
+            "recall": 0.8143,
+            "f1": 0.8114
+          },
+          "logistic_regression": {
+            "accuracy": 0.865,
+            "precision": 0.8162,
+            "recall": 0.7929,
+            "f1": 0.8043
+          },
+          "cross_validation": {
+            "mean": 0.876,
+            "std": 0.0131
+          },
+          "confusion": {
+            "tn": 233,
+            "fp": 27,
+            "fn": 26,
+            "tp": 114
+          },
+          "importance": [
+            0.0344,
+            0.0438,
+            0.1316,
+            0.7757,
+            0.0145
+          ],
+          "average": [
+            1.154,
+            0.477,
+            66.316,
+            65.581,
+            0.586
+          ]
+        },
+        "junior": {
+          "weights": {
+            "education_level": 0.0894,
+            "years_experience": 0.1564,
+            "technical_skill": 0.1341,
+            "communication_skill": 0.5531,
+            "job_stability": 0.067
+          },
+          "train_size": 1600,
+          "test_size": 400,
+          "random_forest": {
+            "accuracy": 0.8775,
+            "precision": 0.8583,
+            "recall": 0.7786,
+            "f1": 0.8165
+          },
+          "logistic_regression": {
+            "accuracy": 0.8925,
+            "precision": 0.8647,
+            "recall": 0.8214,
+            "f1": 0.8425
+          },
+          "cross_validation": {
+            "mean": 0.883,
+            "std": 0.0091
+          },
+          "confusion": {
+            "tn": 242,
+            "fp": 18,
+            "fn": 31,
+            "tp": 109
+          },
+          "importance": [
+            0.0275,
+            0.1033,
+            0.1194,
+            0.6934,
+            0.0565
+          ],
+          "average": [
+            1.27,
+            1.028,
+            65.789,
+            65.161,
+            0.918
+          ]
+        },
+        "mid": {
+          "weights": {
+            "education_level": 0.05,
+            "years_experience": 0.2,
+            "technical_skill": 0.1,
+            "communication_skill": 0.45,
+            "job_stability": 0.2
+          },
+          "train_size": 1600,
+          "test_size": 400,
+          "random_forest": {
+            "accuracy": 0.8825,
+            "precision": 0.855,
+            "recall": 0.8,
+            "f1": 0.8266
+          },
+          "logistic_regression": {
+            "accuracy": 0.895,
+            "precision": 0.8603,
+            "recall": 0.8357,
+            "f1": 0.8478
+          },
+          "cross_validation": {
+            "mean": 0.879,
+            "std": 0.0186
+          },
+          "confusion": {
+            "tn": 241,
+            "fp": 19,
+            "fn": 28,
+            "tp": 112
+          },
+          "importance": [
+            0.023,
+            0.2774,
+            0.0867,
+            0.4739,
+            0.1389
+          ],
+          "average": [
+            1.462,
+            4.952,
+            66.102,
+            65.044,
+            2.665
+          ]
+        },
+        "senior": {
+          "weights": {
+            "education_level": 0.0215,
+            "years_experience": 0.206,
+            "technical_skill": 0.0858,
+            "communication_skill": 0.4635,
+            "job_stability": 0.2232
+          },
+          "train_size": 1600,
+          "test_size": 400,
+          "random_forest": {
+            "accuracy": 0.9075,
+            "precision": 0.9055,
+            "recall": 0.8214,
+            "f1": 0.8614
+          },
+          "logistic_regression": {
+            "accuracy": 0.8975,
+            "precision": 0.8722,
+            "recall": 0.8286,
+            "f1": 0.8498
+          },
+          "cross_validation": {
+            "mean": 0.882,
+            "std": 0.0157
+          },
+          "confusion": {
+            "tn": 248,
+            "fp": 12,
+            "fn": 25,
+            "tp": 115
+          },
+          "importance": [
+            0.0172,
+            0.2393,
+            0.0827,
+            0.4644,
+            0.1964
+          ],
+          "average": [
+            1.611,
+            14.021,
+            65.868,
+            65.056,
+            5.04
+          ]
+        }
+      }
+    },
+    "manager": {
+      "name": "Proje Yöneticisi",
+      "levels": {
+        "intern": {
+          "weights": {
+            "education_level": 0.221,
+            "years_experience": 0.1326,
+            "technical_skill": 0.2155,
+            "communication_skill": 0.4309,
+            "job_stability": 0.0
+          },
+          "train_size": 1600,
+          "test_size": 400,
+          "random_forest": {
+            "accuracy": 0.8925,
+            "precision": 0.8299,
+            "recall": 0.8714,
+            "f1": 0.8502
+          },
+          "logistic_regression": {
+            "accuracy": 0.9,
+            "precision": 0.8378,
+            "recall": 0.8857,
+            "f1": 0.8611
+          },
+          "cross_validation": {
+            "mean": 0.869,
+            "std": 0.0127
+          },
+          "confusion": {
+            "tn": 235,
+            "fp": 25,
+            "fn": 18,
+            "tp": 122
+          },
+          "importance": [
+            0.1077,
+            0.108,
+            0.236,
+            0.5053,
+            0.043
+          ],
+          "average": [
+            1.154,
+            0.502,
+            66.206,
+            65.351,
+            0.593
+          ]
+        },
+        "junior": {
+          "weights": {
+            "education_level": 0.173,
+            "years_experience": 0.227,
+            "technical_skill": 0.1946,
+            "communication_skill": 0.3568,
+            "job_stability": 0.0486
+          },
+          "train_size": 1600,
+          "test_size": 400,
+          "random_forest": {
+            "accuracy": 0.86,
+            "precision": 0.8281,
+            "recall": 0.7571,
+            "f1": 0.791
+          },
+          "logistic_regression": {
+            "accuracy": 0.8775,
+            "precision": 0.8421,
+            "recall": 0.8,
+            "f1": 0.8205
+          },
+          "cross_validation": {
+            "mean": 0.875,
+            "std": 0.0205
+          },
+          "confusion": {
+            "tn": 238,
+            "fp": 22,
+            "fn": 34,
+            "tp": 106
+          },
+          "importance": [
+            0.1378,
+            0.2149,
+            0.1883,
+            0.367,
+            0.0921
+          ],
+          "average": [
+            1.274,
+            1.001,
+            65.594,
+            64.206,
+            0.911
+          ]
+        },
+        "mid": {
+          "weights": {
+            "education_level": 0.1,
+            "years_experience": 0.3,
+            "technical_skill": 0.15,
+            "communication_skill": 0.3,
+            "job_stability": 0.15
+          },
+          "train_size": 1600,
+          "test_size": 400,
+          "random_forest": {
+            "accuracy": 0.87,
+            "precision": 0.8333,
+            "recall": 0.7857,
+            "f1": 0.8088
+          },
+          "logistic_regression": {
+            "accuracy": 0.885,
+            "precision": 0.8615,
+            "recall": 0.8,
+            "f1": 0.8296
+          },
+          "cross_validation": {
+            "mean": 0.8735,
+            "std": 0.0147
+          },
+          "confusion": {
+            "tn": 238,
+            "fp": 22,
+            "fn": 30,
+            "tp": 110
+          },
+          "importance": [
+            0.0607,
+            0.4755,
+            0.113,
+            0.1947,
+            0.156
+          ],
+          "average": [
+            1.509,
+            5.026,
+            66.092,
+            65.774,
+            2.666
+          ]
+        },
+        "senior": {
+          "weights": {
+            "education_level": 0.0448,
+            "years_experience": 0.3229,
+            "technical_skill": 0.1345,
+            "communication_skill": 0.3229,
+            "job_stability": 0.1749
+          },
+          "train_size": 1600,
+          "test_size": 400,
+          "random_forest": {
+            "accuracy": 0.88,
+            "precision": 0.8382,
+            "recall": 0.8143,
+            "f1": 0.8261
+          },
+          "logistic_regression": {
+            "accuracy": 0.875,
+            "precision": 0.8214,
+            "recall": 0.8214,
+            "f1": 0.8214
+          },
+          "cross_validation": {
+            "mean": 0.883,
+            "std": 0.0107
+          },
+          "confusion": {
+            "tn": 238,
+            "fp": 22,
+            "fn": 26,
+            "tp": 114
+          },
+          "importance": [
+            0.0217,
+            0.4595,
+            0.0922,
+            0.252,
+            0.1746
+          ],
+          "average": [
+            1.619,
+            13.974,
+            65.826,
+            65.991,
+            5.039
+          ]
+        }
+      }
+    }
+  }
+}
