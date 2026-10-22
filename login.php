@@ -2,6 +2,9 @@
 require __DIR__ . '/includes/db.php';
 require __DIR__ . '/includes/auth.php';
 require __DIR__ . '/includes/csrf.php';
+require __DIR__ . '/includes/demo.php';
+
+ensureDemoAccount($db);
 
 $error = '';
 
@@ -30,9 +33,25 @@ require __DIR__ . '/includes/header.php';
 <?php if ($error): ?><p class="alert alert-error"><?= htmlspecialchars($error) ?></p><?php endif; ?>
 <form class="form card" method="post">
     <?= csrfField() ?>
-    <p><label>E-posta<input type="email" name="email" required></label></p>
-    <p><label>Şifre<input type="password" name="password" required></label></p>
+    <p><label>E-posta<input type="email" name="email" id="email" required></label></p>
+    <p><label>Şifre<input type="password" name="password" id="password" required></label></p>
     <button class="btn" type="submit">Giriş Yap</button>
 </form>
+<div class="form card demo-hint">
+    <h2>Demo hesapla dene</h2>
+    <p class="muted">Kayıt olmadan İK yöneticisi olarak giriş yapabilirsin.</p>
+    <ul class="facts">
+        <li><span>E-posta</span><?= DEMO_EMAIL ?></li>
+        <li><span>Şifre</span><?= DEMO_PASSWORD ?></li>
+    </ul>
+    <button class="btn btn-outline" type="button" id="fill-demo">Demo bilgilerini doldur</button>
+</div>
+<script>
+document.getElementById('fill-demo').addEventListener('click', function () {
+    document.getElementById('email').value = <?= json_encode(DEMO_EMAIL) ?>;
+    document.getElementById('password').value = <?= json_encode(DEMO_PASSWORD) ?>;
+    document.getElementById('email').form.querySelector('button[type=submit]').focus();
+});
+</script>
 <p class="muted">Hesabın yok mu? <a href="register.php">Kayıt ol</a></p>
 <?php require __DIR__ . '/includes/footer.php'; ?>
