@@ -7,8 +7,11 @@ from pathlib import Path
 
 import joblib
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, confusion_matrix, f1_score, precision_score, recall_score
 from sklearn.model_selection import cross_val_score, train_test_split
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import StandardScaler
 
 from candidate_data import make_candidates
 from candidate_model import FEATURES, LEVELS, POSITIONS, level_weights
@@ -47,13 +50,17 @@ def main():
             rf_pred = rf.predict(X_test)
             m = scores(y_test, rf_pred)
 
+            # Simple baseline to compare against
+            lr = make_pipeline(StandardScaler(), LogisticRegression(max_iter=1000)).fit(X_train, y_train)
+            lr_m = scores(y_test, lr.predict(X_test))
+
             cv = cross_val_score(random_forest(), X, y, cv=5)
             cm = confusion_matrix(y_test, rf_pred)  # [[TN, FP], [FN, TP]]
 
             joblib.dump(rf, MODELS / f"rf_{pos}_{lvl}.joblib", compress=3)
             print(f"{p['name']:<28} {l['name']:<24} "
-                  f"accuracy: %{m['accuracy'] * 100:.1f}  F1: {m['f1']:.3f}  "
-                  f"CV: %{cv.mean() * 100:.1f}  wrong: {cm[0][1] + cm[1][0]}")
+                  f"RF: %{m['accuracy'] * 100:.1f}  LR: %{lr_m['accuracy'] * 100:.1f}  "
+                  f"F1: {m['f1']:.3f}  CV: %{cv.mean() * 100:.1f}  wrong: {cm[0][1] + cm[1][0]}")
 
     print("\n16 models saved to ml/models/")
 
