@@ -28,6 +28,7 @@ require __DIR__ . '/includes/header.php';
                 <a class="btn btn-outline" href="applicants.php?job_id=<?= (int) $job['id'] ?>">
                     Başvuranlar (<?= (int) $job['applicant_count'] ?>)
                 </a>
+                <a class="btn btn-outline" href="job_edit.php?id=<?= (int) $job['id'] ?>">Düzenle</a>
             <?php endif; ?>
         </div>
     </div>

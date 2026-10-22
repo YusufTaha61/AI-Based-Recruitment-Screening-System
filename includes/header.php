@@ -5,7 +5,7 @@ $navUser = currentUser();
 $currentPage = basename($_SERVER['SCRIPT_NAME']);
 
 // Pages that belong to the "İlanlar" menu item
-if (in_array($currentPage, ['apply.php', 'applicants.php', 'application.php'], true)) {
+if (in_array($currentPage, ['apply.php', 'applicants.php', 'application.php', 'job_edit.php'], true)) {
     $currentPage = 'index.php';
 }
 
