@@ -1,6 +1,7 @@
 <?php
 require __DIR__ . '/includes/db.php';
 require __DIR__ . '/includes/ml.php';
+require __DIR__ . '/includes/csrf.php';
 
 $jobId = (int) ($_GET['job_id'] ?? 0);
 $stmt = $db->prepare('SELECT * FROM jobs WHERE id = ?');
@@ -18,6 +19,7 @@ $allowed = ['pdf', 'txt'];
 $maxSize = 5 * 1024 * 1024; // 5 MB
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    verifyCsrf();
     $name = trim($_POST['name'] ?? '');
     $email = trim($_POST['email'] ?? '');
     $file = $_FILES['cv'] ?? null;
@@ -56,6 +58,7 @@ require __DIR__ . '/includes/header.php';
 <?php else: ?>
     <?php if ($error): ?><p class="alert alert-error"><?= htmlspecialchars($error) ?></p><?php endif; ?>
     <form class="form card" method="post" enctype="multipart/form-data">
+        <?= csrfField() ?>
         <p><label>Ad Soyad<input type="text" name="name" required></label></p>
         <p><label>E-posta<input type="email" name="email" required></label></p>
         <p><label>CV (PDF veya TXT, en fazla 5 MB)<input type="file" name="cv" accept=".pdf,.txt" required></label></p>
