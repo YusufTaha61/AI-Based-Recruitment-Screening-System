@@ -127,3 +127,33 @@ function evaluateCandidate(string $position, string $level, array $values): arra
     }
     return $result;
 }
+
+/**
+ * Strong and weak sides of a candidate. Each value is turned into 0-1
+ * (experience is measured inside the candidate's own level range).
+ * Returns [strong labels, weak labels].
+ */
+function candidateStrengths(array $c): array
+{
+    [$min, $max] = CANDIDATE_LEVEL_YEARS[$c['level']] ?? [0, 20];
+    $scaled = [
+        'education_level' => ($c['education_level'] - 1) / 2,
+        'years_experience' => ($c['years_experience'] - $min) / ($max - $min),
+        'technical_skill' => ($c['technical_skill'] - 30) / 70,
+        'communication_skill' => ($c['communication_skill'] - 30) / 70,
+        'job_stability' => ($c['job_stability'] - 0.5) / 9.5,
+    ];
+    if ($c['level'] === 'intern') {
+        unset($scaled['job_stability']); // not used for interns
+    }
+
+    $strong = $weak = [];
+    foreach ($scaled as $key => $value) {
+        if ($value >= 0.7) {
+            $strong[] = CANDIDATE_FEATURES[$key];
+        } elseif ($value <= 0.35) {
+            $weak[] = CANDIDATE_FEATURES[$key];
+        }
+    }
+    return [$strong, $weak];
+}

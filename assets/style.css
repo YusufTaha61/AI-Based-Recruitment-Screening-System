@@ -260,3 +260,17 @@ tr:last-child td { border-bottom: none; }
 @media (max-width: 860px) {
     .result-grid { grid-template-columns: 1fr; }
 }
+
+/* Score explanation bars */
+.bar-row { margin: 14px 0; }
+.bar-label { display: flex; justify-content: space-between; font-size: .92rem; margin-bottom: 6px; }
+.bar, .effect-bar { height: 10px; border-radius: 999px; background: var(--bg); overflow: hidden; }
+.bar div { height: 100%; border-radius: 999px; background: var(--primary); }
+.effect-bar { position: relative; }
+.effect-bar::after { content: ""; position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: var(--border); }
+.effect-bar div { position: absolute; top: 0; bottom: 0; }
+.effect-bar .up { left: 50%; background: var(--green); border-radius: 0 999px 999px 0; }
+.effect-bar .down { right: 50%; background: var(--red); border-radius: 999px 0 0 999px; }
+.text-up { color: var(--green); }
+.text-down { color: var(--red); }
+.small { font-size: .84rem; }
