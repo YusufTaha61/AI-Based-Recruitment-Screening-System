@@ -52,6 +52,16 @@ require __DIR__ . '/includes/header.php';
 
 <?php if ($error): ?><p class="alert alert-error"><?= htmlspecialchars($error) ?></p><?php endif; ?>
 
+<div class="form card">
+    <h2>CV'den Otomatik Doldur <span class="hint">(isteğe bağlı)</span></h2>
+    <p class="muted small">PDF veya TXT formatında CV seçin. Sistem bilgileri tahmin edip formu doldurur, siz kontrol edip düzeltirsiniz.</p>
+    <div class="cv-row">
+        <input type="file" id="cv-file" accept=".pdf,.txt">
+        <button class="btn btn-outline" type="button" id="cv-read">CV'yi Oku</button>
+    </div>
+    <div id="cv-result" class="alert" hidden></div>
+</div>
+
 <form class="form card" method="post" action="evaluate.php">
     <?= csrfField() ?>
 
@@ -145,5 +155,60 @@ document.querySelectorAll('input[type=range]').forEach(function (slider) {
 });
 document.getElementById('level').addEventListener('change', levelChanged);
 levelChanged();
+
+// Read the chosen CV on the server and fill the form with the guesses
+document.getElementById('cv-read').addEventListener('click', function () {
+    var file = document.getElementById('cv-file').files[0];
+    var box = document.getElementById('cv-result');
+    box.hidden = false;
+    if (!file) {
+        box.className = 'alert alert-error';
+        box.textContent = 'Önce bir CV dosyası seçin.';
+        return;
+    }
+    box.className = 'alert';
+    box.textContent = 'CV okunuyor...';
+
+    var data = new FormData();
+    data.append('cv', file);
+    data.append('csrf_token', document.querySelector('input[name=csrf_token]').value);
+
+    fetch('cv_profile.php', { method: 'POST', body: data })
+        .then(function (response) { return response.text(); })
+        .then(function (text) {
+            var result;
+            try { result = JSON.parse(text); } catch (e) { result = { error: text || 'Sunucudan cevap gelmedi.' }; }
+            if (result.error) {
+                box.className = 'alert alert-error';
+                box.textContent = result.error;
+                return;
+            }
+
+            if (result.name) document.getElementById('name').value = result.name;
+            document.getElementById('education_level').value = result.education_level;
+            document.getElementById('level').value = result.level;
+            levelChanged(); // sets the experience range for the guessed level
+            ['years_experience', 'technical_skill', 'communication_skill', 'job_stability'].forEach(function (id) {
+                var slider = document.getElementById(id);
+                slider.value = result[id];
+                showValue(slider);
+            });
+
+            box.className = 'alert alert-success';
+            box.textContent = 'Form CV\'ye göre dolduruldu. Değerler tahminidir, lütfen kontrol edin.';
+            if (result.technical_found.length) {
+                box.appendChild(document.createElement('br'));
+                box.appendChild(document.createTextNode('Teknik beceriler: ' + result.technical_found.join(', ')));
+            }
+            if (result.communication_found.length) {
+                box.appendChild(document.createElement('br'));
+                box.appendChild(document.createTextNode('İletişim becerileri: ' + result.communication_found.join(', ')));
+            }
+        })
+        .catch(function () {
+            box.className = 'alert alert-error';
+            box.textContent = 'CV okunamadı, sunucuya ulaşılamadı.';
+        });
+});
 </script>
 <?php require __DIR__ . '/includes/footer.php'; ?>

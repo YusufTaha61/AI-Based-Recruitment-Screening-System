@@ -274,3 +274,8 @@ tr:last-child td { border-bottom: none; }
 .text-up { color: var(--green); }
 .text-down { color: var(--red); }
 .small { font-size: .84rem; }
+
+/* CV upload on the evaluation form */
+.cv-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 10px; }
+.cv-row input[type=file] { flex: 1; min-width: 200px; margin: 0; }
+#cv-result { margin-top: 14px; margin-bottom: 0; line-height: 1.6; }

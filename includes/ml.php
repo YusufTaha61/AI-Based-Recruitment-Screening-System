@@ -36,6 +36,17 @@ function extractCvText(string $filePath): string
     return trim(runPython('extract_text.py', [$filePath]) ?? '');
 }
 
+// Guess the evaluation form values from a CV file (ml/cv_profile.py)
+function cvProfile(string $filePath): array
+{
+    $output = runPython('cv_profile.py', [$filePath]);
+    $result = $output ? json_decode($output, true) : null;
+    if (!is_array($result)) {
+        return ['error' => 'CV okunamadı. Python kurulumunu kontrol edin.'];
+    }
+    return $result;
+}
+
 function scoreCv(string $cvText, string $requirements): ?array
 {
     $input = json_encode(['cv_text' => $cvText, 'requirements' => $requirements]);
