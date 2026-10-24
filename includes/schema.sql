@@ -27,3 +27,26 @@ CREATE TABLE IF NOT EXISTS applications (
     created_at TEXT DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (job_id) REFERENCES jobs(id)
 );
+
+CREATE TABLE IF NOT EXISTS candidates (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    application_id INTEGER,
+    name TEXT NOT NULL,
+    position TEXT NOT NULL,
+    level TEXT NOT NULL,
+    education_level INTEGER NOT NULL,
+    years_experience REAL NOT NULL,
+    technical_skill REAL NOT NULL,
+    communication_skill REAL NOT NULL,
+    job_stability REAL NOT NULL,
+    score REAL NOT NULL,
+    baseline REAL,
+    contributions TEXT,
+    importance TEXT,
+    status TEXT NOT NULL DEFAULT 'Yeni',
+    notes TEXT NOT NULL DEFAULT '',
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (application_id) REFERENCES applications(id)
+);
