@@ -13,6 +13,7 @@ if (in_array($currentPage, ['apply.php', 'applicants.php', 'application.php', 'j
 $menu = [
     'index.php' => ['İlanlar', '<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M3 13h18"/>'],
     'job_create.php' => ['Yeni İlan', '<path d="M12 5v14M5 12h14"/>'],
+    'evaluate.php' => ['Aday Değerlendir', '<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>'],
 ];
 
 // First letter of the user's name for the avatar

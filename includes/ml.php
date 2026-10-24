@@ -59,6 +59,14 @@ const CANDIDATE_LEVELS = [
     'senior' => 'Kıdemli (Senior)',
 ];
 
+// Experience range (years) for each level, same as LEVELS in ml/candidate_model.py
+const CANDIDATE_LEVEL_YEARS = [
+    'intern' => [0, 1],
+    'junior' => [0, 2],
+    'mid' => [2, 8],
+    'senior' => [8, 20],
+];
+
 // Same order as FEATURES in ml/candidate_model.py
 const CANDIDATE_FEATURES = [
     'education_level' => 'Eğitim',

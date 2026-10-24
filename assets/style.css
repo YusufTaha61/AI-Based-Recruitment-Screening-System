@@ -214,3 +214,25 @@ tr:last-child td { border-bottom: none; }
 .demo-hint { margin-top: 18px; background: var(--primary-soft); border-color: #d3d0fa; }
 .demo-hint .facts li { background: var(--card); font-size: .95rem; }
 .demo-hint .btn { margin-top: 14px; }
+
+/* Candidate evaluation form */
+.form select {
+    width: 100%;
+    margin-top: 6px;
+    padding: 11px 13px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: #fbfbfe;
+    font: inherit; font-weight: 400;
+    color: var(--text);
+}
+.form select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); }
+.hint { display: block; margin-top: 4px; font-size: .84rem; font-weight: 400; color: var(--muted); }
+.range-row { display: flex; align-items: center; gap: 12px; margin-top: 6px; }
+.range-row input[type=range] { flex: 1; margin: 0; padding: 0; border: 0; background: none; accent-color: var(--primary); box-shadow: none; }
+.range-value {
+    min-width: 46px; text-align: center;
+    padding: 4px 8px; border-radius: 8px;
+    background: var(--primary-soft); color: var(--primary-dark);
+    font-weight: 700; font-size: .9rem;
+}
