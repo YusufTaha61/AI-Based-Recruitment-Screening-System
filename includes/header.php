@@ -20,8 +20,10 @@ $menu = [
     'evaluate.php' => ['Aday Değerlendir', '<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>'],
 ];
 
-// Evaluators can't post jobs
-if ($navUser && !isHr()) {
+// Only HR managers manage users; evaluators can't post jobs
+if ($navUser && isHr()) {
+    $menu['users.php'] = ['Kullanıcılar', '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7"/><path d="M18 14.5a6.5 6.5 0 0 1 3.5 5.5"/>'];
+} elseif ($navUser) {
     unset($menu['job_create.php']);
 }
 

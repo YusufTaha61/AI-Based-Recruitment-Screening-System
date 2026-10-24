@@ -8,3 +8,7 @@ $userColumns = array_column($db->query('PRAGMA table_info(users)')->fetchAll(PDO
 if ($userColumns && !in_array('role', $userColumns, true)) {
     $db->exec("ALTER TABLE users ADD COLUMN role TEXT NOT NULL DEFAULT 'hr'");
 }
+// "created_by": the HR manager who added this user on the Users page
+if ($userColumns && !in_array('created_by', $userColumns, true)) {
+    $db->exec('ALTER TABLE users ADD COLUMN created_by INTEGER');
+}

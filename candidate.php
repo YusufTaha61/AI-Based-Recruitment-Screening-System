@@ -21,9 +21,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // Load the candidate together with the name of the person who evaluated it
 $stmt = $db->prepare(
-    'SELECT c.*, u.name AS evaluator FROM candidates c
-     JOIN users u ON u.id = c.user_id
-     WHERE c.id = ?'
+    "SELECT c.*, COALESCE(u.name, 'Silinmiş kullanıcı') AS evaluator FROM candidates c
+     LEFT JOIN users u ON u.id = c.user_id
+     WHERE c.id = ?"
 );
 $stmt->execute([(int) ($_GET['id'] ?? 0)]);
 $candidate = $stmt->fetch(PDO::FETCH_ASSOC);

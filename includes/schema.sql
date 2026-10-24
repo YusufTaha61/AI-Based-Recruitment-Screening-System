@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS users (
     email TEXT NOT NULL UNIQUE,
     password_hash TEXT NOT NULL,
     role TEXT NOT NULL DEFAULT 'hr',
+    created_by INTEGER,
     created_at TEXT DEFAULT CURRENT_TIMESTAMP
 );
 
