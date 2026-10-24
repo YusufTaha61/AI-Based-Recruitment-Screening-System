@@ -279,3 +279,8 @@ tr:last-child td { border-bottom: none; }
 .cv-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 10px; }
 .cv-row input[type=file] { flex: 1; min-width: 200px; margin: 0; }
 #cv-result { margin-top: 14px; margin-bottom: 0; line-height: 1.6; }
+
+/* What-if simulation */
+.sim-score { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: 6px 0 4px; }
+.sim-score b { font-family: var(--heading-font); font-size: 1.8rem; transition: opacity .2s; }
+#sim-form { max-width: none; }

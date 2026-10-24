@@ -1,6 +1,7 @@
 <?php
 require __DIR__ . '/includes/db.php';
 require __DIR__ . '/includes/auth.php';
+require __DIR__ . '/includes/csrf.php';
 require __DIR__ . '/includes/helpers.php';
 require __DIR__ . '/includes/ml.php';
 requireLogin();
@@ -24,8 +25,12 @@ $level = scoreLevel($score);
 
 // How many points each feature added (+) or removed (-), biggest effect first
 $labels = array_values(CANDIDATE_FEATURES);
+$isIntern = $candidate['level'] === 'intern'; // interns don't use job stability (last feature)
 $contributions = [];
 foreach (json_decode($candidate['contributions'] ?? '[]', true) ?: [] as $i => $points) {
+    if ($isIntern && $i === 4) {
+        continue;
+    }
     $contributions[$labels[$i]] = (float) $points;
 }
 uasort($contributions, fn($a, $b) => abs($b) <=> abs($a));
@@ -38,6 +43,9 @@ asort($lowered);
 // How much the model cares about each feature in general (same for every candidate)
 $importance = [];
 foreach (json_decode($candidate['importance'] ?? '[]', true) ?: [] as $i => $share) {
+    if ($isIntern && $i === 4) {
+        continue;
+    }
     $importance[$labels[$i]] = $share * 100;
 }
 arsort($importance);
@@ -145,9 +153,117 @@ require __DIR__ . '/includes/header.php';
         </div>
         <?php endif; ?>
 
+        <div class="card">
+            <h2>"Ne Olursa?" Simülasyonu</h2>
+            <p class="muted">Değerleri değiştirin, puan anında yeniden hesaplansın. Kayıt değişmez.</p>
+            <div class="sim-score">
+                <span>Simülasyon puanı:</span>
+                <b id="sim-score">%<?= round($score) ?></b>
+                <span id="sim-decision" class="decision decision-<?= $level ?>"><?= decisionLabel($score) ?></span>
+            </div>
+            <form class="form" id="sim-form">
+                <?= csrfField() ?>
+                <input type="hidden" name="position" value="<?= htmlspecialchars($candidate['position']) ?>">
+                <p><label>Tecrübe seviyesi
+                    <select name="level" id="sim-level">
+                        <?php foreach (CANDIDATE_LEVELS as $key => $label): ?>
+                            <option value="<?= $key ?>" <?= $key === $candidate['level'] ? 'selected' : '' ?>><?= htmlspecialchars($label) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                    <span class="hint">Örneğin: "Bu aday kıdemli kadroya başvursaydı puanı ne olurdu?"</span>
+                </label></p>
+                <p><label>Eğitim
+                    <select name="education_level">
+                        <?php foreach ([1, 2, 3] as $value): ?>
+                            <option value="<?= $value ?>" <?= (int) $candidate['education_level'] === $value ? 'selected' : '' ?>><?= educationLabel($value) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </label></p>
+                <?php
+                // [field, label, min, max, step]
+                $sliders = [
+                    ['years_experience', 'Tecrübe (yıl)', 0, 20, 0.5],
+                    ['technical_skill', 'Teknik beceri', 30, 100, 1],
+                    ['communication_skill', 'İletişim', 30, 100, 1],
+                    ['job_stability', 'İş istikrarı (yıl)', 0.5, 10, 0.1],
+                ];
+                foreach ($sliders as [$field, $label, $min, $max, $step]):
+                    $value = (float) $candidate[$field]; ?>
+                    <p id="sim-box-<?= $field ?>"><label for="sim-<?= $field ?>"><?= $label ?></label>
+                        <span class="range-row">
+                            <input type="range" name="<?= $field ?>" id="sim-<?= $field ?>" min="<?= $min ?>" max="<?= $max ?>" step="<?= $step ?>" value="<?= $value ?>">
+                            <span class="range-value" data-for="sim-<?= $field ?>"><?= $value ?></span>
+                        </span>
+                    </p>
+                <?php endforeach; ?>
+            </form>
+        </div>
+
         <div class="actions">
             <a class="btn" href="evaluate.php">+ Yeni Aday</a>
         </div>
     </div>
 </div>
+<script>
+(function () {
+    var LEVEL_YEARS = <?= json_encode(CANDIDATE_LEVEL_YEARS) ?>;
+    var form = document.getElementById('sim-form');
+    var scoreBox = document.getElementById('sim-score');
+    var decisionBox = document.getElementById('sim-decision');
+    var timer = null;
+
+    function showValue(slider) {
+        var box = form.querySelector('.range-value[data-for="' + slider.id + '"]');
+        box.textContent = slider.step.indexOf('.') > -1 ? parseFloat(slider.value).toFixed(1) : slider.value;
+    }
+
+    // Same rules as the evaluation form: level sets the experience range
+    function levelChanged() {
+        var level = document.getElementById('sim-level').value;
+        var years = document.getElementById('sim-years_experience');
+        var range = LEVEL_YEARS[level];
+        years.min = range[0];
+        years.max = range[1];
+        if (years.value < range[0] || years.value > range[1]) {
+            years.value = range[0];
+        }
+        showValue(years);
+        document.getElementById('sim-box-job_stability').hidden = level === 'intern';
+    }
+
+    // Ask the model for a new score (only for the screen, nothing is saved)
+    function simulate() {
+        scoreBox.style.opacity = 0.4;
+        fetch('simulate.php', { method: 'POST', body: new FormData(form) })
+            .then(function (response) { return response.json(); })
+            .then(function (result) {
+                scoreBox.style.opacity = 1;
+                if (result.error) {
+                    scoreBox.textContent = 'Hata';
+                    decisionBox.textContent = result.error;
+                    return;
+                }
+                scoreBox.textContent = '%' + Math.round(result.score);
+                decisionBox.className = 'decision decision-' + result.level;
+                decisionBox.textContent = result.decision;
+            })
+            .catch(function () { scoreBox.style.opacity = 1; scoreBox.textContent = 'Hata'; });
+    }
+
+    form.querySelectorAll('input[type=range]').forEach(function (slider) {
+        slider.addEventListener('input', function () { showValue(slider); });
+    });
+    document.getElementById('sim-level').addEventListener('change', levelChanged);
+    // Wait until the user stops moving the slider, then calculate once
+    form.addEventListener('input', function () {
+        clearTimeout(timer);
+        timer = setTimeout(simulate, 350);
+    });
+    form.addEventListener('change', function () {
+        clearTimeout(timer);
+        timer = setTimeout(simulate, 350);
+    });
+    levelChanged();
+})();
+</script>
 <?php require __DIR__ . '/includes/footer.php'; ?>
