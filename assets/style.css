@@ -236,3 +236,27 @@ tr:last-child td { border-bottom: none; }
     background: var(--primary-soft); color: var(--primary-dark);
     font-weight: 700; font-size: .9rem;
 }
+
+/* Candidate result page */
+.result-grid { display: grid; grid-template-columns: 320px 1fr; gap: 20px; align-items: start; }
+.result-grid .card { margin-top: 0; margin-bottom: 20px; }
+.score-card { text-align: center; }
+.gauge { position: relative; width: 190px; height: 190px; margin: 6px auto 14px; }
+.gauge svg { transform: rotate(-90deg); }
+.gauge circle { fill: none; stroke-width: 16; }
+.gauge-track { stroke: var(--border); }
+.gauge-fill { stroke-linecap: round; transition: stroke-dashoffset .6s; }
+.gauge-high { stroke: var(--green); }
+.gauge-medium { stroke: var(--amber); }
+.gauge-low { stroke: var(--red); }
+.gauge-text { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.gauge-text b { font-family: var(--heading-font); font-size: 2.4rem; line-height: 1; }
+.gauge-text span { color: var(--muted); font-size: .9rem; }
+.decision { display: inline-block; padding: 6px 14px; border-radius: 999px; font-weight: 700; font-size: .92rem; }
+.decision-high { background: var(--green-bg); color: var(--green); }
+.decision-medium { background: var(--amber-bg); color: var(--amber); }
+.decision-low { background: var(--red-bg); color: var(--red); }
+.score-limits { margin-top: 14px; font-size: .84rem; line-height: 1.7; }
+@media (max-width: 860px) {
+    .result-grid { grid-template-columns: 1fr; }
+}

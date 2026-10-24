@@ -2,12 +2,10 @@
 require __DIR__ . '/includes/db.php';
 require __DIR__ . '/includes/auth.php';
 require __DIR__ . '/includes/csrf.php';
-require __DIR__ . '/includes/helpers.php';
 require __DIR__ . '/includes/ml.php';
 requireLogin();
 
 $error = '';
-$saved = null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     verifyCsrf();
@@ -40,17 +38,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 json_encode($result['contributions']), json_encode($result['importance']),
             ]);
             // Redirect so refreshing the page doesn't save the candidate twice
-            header('Location: evaluate.php?saved=' . $db->lastInsertId());
+            header('Location: candidate.php?id=' . $db->lastInsertId());
             exit;
         }
     }
-}
-
-// Show the result of the candidate that was just saved
-if (isset($_GET['saved'])) {
-    $stmt = $db->prepare('SELECT name, score FROM candidates WHERE id = ? AND user_id = ?');
-    $stmt->execute([(int) $_GET['saved'], currentUser()['id']]);
-    $saved = $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
 }
 
 $pageTitle = 'Aday Değerlendir';
@@ -59,11 +50,6 @@ require __DIR__ . '/includes/header.php';
 <h1>Aday Değerlendir</h1>
 <p class="muted">Adayın bilgilerini girin, yapay zeka modeli pozisyona uyum puanını hesaplasın.</p>
 
-<?php if ($saved): ?>
-    <p class="alert alert-success">
-        <strong><?= htmlspecialchars($saved['name']) ?></strong> kaydedildi. Uyum puanı: <?= scoreBadge((float) $saved['score']) ?>
-    </p>
-<?php endif; ?>
 <?php if ($error): ?><p class="alert alert-error"><?= htmlspecialchars($error) ?></p><?php endif; ?>
 
 <form class="form card" method="post" action="evaluate.php">
