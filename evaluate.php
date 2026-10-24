@@ -2,14 +2,69 @@
 require __DIR__ . '/includes/db.php';
 require __DIR__ . '/includes/auth.php';
 require __DIR__ . '/includes/csrf.php';
+require __DIR__ . '/includes/helpers.php';
 require __DIR__ . '/includes/ml.php';
 requireLogin();
+
+$error = '';
+$saved = null;
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    verifyCsrf();
+    $name = mb_substr(trim($_POST['name'] ?? ''), 0, 60);
+    $position = $_POST['position'] ?? '';
+    $level = $_POST['level'] ?? '';
+
+    if ($name === '') {
+        $error = 'Lütfen adayın adını yazın.';
+    } elseif (!isset(CANDIDATE_POSITIONS[$position], CANDIDATE_LEVELS[$level])) {
+        $error = 'Geçersiz pozisyon veya seviye.';
+    } else {
+        // Ask the model for this position + level
+        $values = candidateValuesFromForm($_POST, $level);
+        $result = evaluateCandidate($position, $level, $values);
+
+        if (isset($result['error'])) {
+            $error = $result['error'];
+        } else {
+            $stmt = $db->prepare(
+                'INSERT INTO candidates (user_id, name, position, level, education_level, years_experience,
+                    technical_skill, communication_skill, job_stability, score, baseline, contributions, importance)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+            );
+            $stmt->execute([
+                currentUser()['id'], $name, $position, $level,
+                $values['education_level'], $values['years_experience'], $values['technical_skill'],
+                $values['communication_skill'], $values['job_stability'],
+                $result['score'], $result['baseline'],
+                json_encode($result['contributions']), json_encode($result['importance']),
+            ]);
+            // Redirect so refreshing the page doesn't save the candidate twice
+            header('Location: evaluate.php?saved=' . $db->lastInsertId());
+            exit;
+        }
+    }
+}
+
+// Show the result of the candidate that was just saved
+if (isset($_GET['saved'])) {
+    $stmt = $db->prepare('SELECT name, score FROM candidates WHERE id = ? AND user_id = ?');
+    $stmt->execute([(int) $_GET['saved'], currentUser()['id']]);
+    $saved = $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
+}
 
 $pageTitle = 'Aday Değerlendir';
 require __DIR__ . '/includes/header.php';
 ?>
 <h1>Aday Değerlendir</h1>
 <p class="muted">Adayın bilgilerini girin, yapay zeka modeli pozisyona uyum puanını hesaplasın.</p>
+
+<?php if ($saved): ?>
+    <p class="alert alert-success">
+        <strong><?= htmlspecialchars($saved['name']) ?></strong> kaydedildi. Uyum puanı: <?= scoreBadge((float) $saved['score']) ?>
+    </p>
+<?php endif; ?>
+<?php if ($error): ?><p class="alert alert-error"><?= htmlspecialchars($error) ?></p><?php endif; ?>
 
 <form class="form card" method="post" action="evaluate.php">
     <?= csrfField() ?>

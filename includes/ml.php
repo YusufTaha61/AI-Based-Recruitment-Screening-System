@@ -77,6 +77,29 @@ const CANDIDATE_FEATURES = [
 ];
 
 /**
+ * Read the 5 feature values from a form and keep them inside safe limits.
+ * Experience must stay inside the chosen level's range, job stability can't
+ * be longer than the experience, and interns don't use job stability.
+ */
+function candidateValuesFromForm(array $src, string $level): array
+{
+    [$min, $max] = CANDIDATE_LEVEL_YEARS[$level] ?? [0, 20];
+    $years = round((float) ($src['years_experience'] ?? $min) * 2) / 2; // 0.5 steps
+    $years = max($min, min($max, $years));
+
+    $stability = max(0.5, min(10, (float) ($src['job_stability'] ?? 0.5)));
+    $stability = $level === 'intern' ? 0.5 : min($stability, max(0.5, $years));
+
+    return [
+        'education_level' => max(1, min(3, (int) ($src['education_level'] ?? 1))),
+        'years_experience' => $years,
+        'technical_skill' => max(30, min(100, (float) ($src['technical_skill'] ?? 30))),
+        'communication_skill' => max(30, min(100, (float) ($src['communication_skill'] ?? 30))),
+        'job_stability' => $stability,
+    ];
+}
+
+/**
  * Score a candidate profile. $values uses the keys of CANDIDATE_FEATURES.
  * Returns ['score', 'shortlisted', 'baseline', 'contributions', 'importance']
  * or ['error' => '...'] when something goes wrong.
