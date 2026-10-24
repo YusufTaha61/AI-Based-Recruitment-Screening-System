@@ -6,6 +6,18 @@ require __DIR__ . '/includes/helpers.php';
 require __DIR__ . '/includes/ml.php';
 requireLogin();
 
+// Save the hiring status and notes
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    verifyCsrf();
+    $id = (int) ($_POST['id'] ?? 0);
+    $status = in_array($_POST['status'] ?? '', CANDIDATE_STATUSES, true) ? $_POST['status'] : 'Yeni';
+    $notes = mb_substr(trim($_POST['notes'] ?? ''), 0, 2000);
+
+    $db->prepare('UPDATE candidates SET status = ?, notes = ? WHERE id = ?')->execute([$status, $notes, $id]);
+    header('Location: candidate.php?id=' . $id . '&saved=1');
+    exit;
+}
+
 // Load the candidate together with the name of the person who evaluated it
 $stmt = $db->prepare(
     'SELECT c.*, u.name AS evaluator FROM candidates c
@@ -64,6 +76,10 @@ require __DIR__ . '/includes/header.php';
     Değerlendiren: <?= htmlspecialchars($candidate['evaluator']) ?>
 </p>
 
+<?php if (isset($_GET['saved'])): ?>
+    <p class="alert alert-success">Takip bilgileri kaydedildi.</p>
+<?php endif; ?>
+
 <div class="result-grid">
     <div>
         <div class="card score-card">
@@ -75,6 +91,25 @@ require __DIR__ . '/includes/header.php';
                 %40 – %70: Değerlendirilebilir<br>
                 %40 altı: Elendi
             </p>
+        </div>
+
+        <div class="card">
+            <h2>Aday Takibi</h2>
+            <form class="form" method="post">
+                <?= csrfField() ?>
+                <input type="hidden" name="id" value="<?= (int) $candidate['id'] ?>">
+                <p><label>Süreç durumu
+                    <select name="status">
+                        <?php foreach (CANDIDATE_STATUSES as $status): ?>
+                            <option <?= $candidate['status'] === $status ? 'selected' : '' ?>><?= $status ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </label></p>
+                <p><label>Notlar
+                    <textarea name="notes" rows="4" maxlength="2000" placeholder="Örn: Mülakat 28 Ekim'de, referansları aranacak..."><?= htmlspecialchars($candidate['notes']) ?></textarea>
+                </label></p>
+                <button class="btn" type="submit">Kaydet</button>
+            </form>
         </div>
     </div>
 

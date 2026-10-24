@@ -1,6 +1,9 @@
 <?php
 // Small view helpers shared by the result pages.
 
+// Hiring steps a candidate can be in
+const CANDIDATE_STATUSES = ['Yeni', 'Mülakata Çağrıldı', 'Teklif Verildi', 'İşe Alındı', 'Reddedildi'];
+
 function scoreLevel(?float $score): string
 {
     if ($score === null) {
