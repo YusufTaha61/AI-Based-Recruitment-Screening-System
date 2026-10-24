@@ -28,6 +28,11 @@ $missing = array_values(array_diff($required, $matched));
 $features = $result['features'] ?? null;
 $score = $app['score'] === null ? null : (float) $app['score'];
 
+// Evaluations made for this application
+$stmt = $db->prepare('SELECT id, position, level, score, status, created_at FROM candidates WHERE application_id = ? ORDER BY id DESC');
+$stmt->execute([$app['id']]);
+$evaluations = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 $pageTitle = 'Başvuru - ' . $app['name'];
 require __DIR__ . '/includes/header.php';
 ?>
@@ -61,6 +66,33 @@ require __DIR__ . '/includes/header.php';
         <?php endforeach; ?>
     </p>
     <p class="muted">Yeşil: CV'de bulundu. Kırmızı: eksik.</p>
+</div>
+
+<div class="card">
+    <h2>Aday Değerlendirmesi</h2>
+    <p class="muted">CV'deki eğitim, tecrübe ve becerilere göre adayı pozisyon modeliyle değerlendirin.</p>
+    <?php if ($evaluations): ?>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>Pozisyon</th><th>Seviye</th><th>Puan</th><th>Durum</th><th>Tarih</th><th></th></tr></thead>
+                <tbody>
+                <?php foreach ($evaluations as $evaluation): ?>
+                    <tr>
+                        <td><?= htmlspecialchars(CANDIDATE_POSITIONS[$evaluation['position']] ?? '-') ?></td>
+                        <td><?= htmlspecialchars(CANDIDATE_LEVELS[$evaluation['level']] ?? '-') ?></td>
+                        <td><?= scoreBadge((float) $evaluation['score']) ?></td>
+                        <td><?= htmlspecialchars($evaluation['status']) ?></td>
+                        <td><?= localDateTime($evaluation['created_at']) ?></td>
+                        <td><a href="candidate.php?id=<?= (int) $evaluation['id'] ?>">Sonuç</a></td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    <?php endif; ?>
+    <div class="actions">
+        <a class="btn" href="evaluate.php?application_id=<?= (int) $app['id'] ?>">Bu Adayı Değerlendir</a>
+    </div>
 </div>
 
 <div class="card">

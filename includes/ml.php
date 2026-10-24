@@ -87,6 +87,25 @@ const CANDIDATE_FEATURES = [
     'job_stability' => 'İş istikrarı',
 ];
 
+// Guess the candidate model's position from a job title (e.g. "Kıdemli Yazılım Geliştirici" -> software)
+function guessPosition(string $jobTitle): string
+{
+    $title = mb_strtolower(str_replace(['I', 'İ'], ['ı', 'i'], $jobTitle));
+    $words = [
+        'software' => ['yazılım', 'developer', 'geliştirici', 'programcı', 'engineer', 'mühendis', 'backend', 'frontend', 'full stack', 'veri bilim', 'data'],
+        'sales' => ['satış', 'sales', 'müşteri', 'customer', 'pazarlama', 'marketing'],
+        'manager' => ['proje', 'project', 'yönetici', 'manager', 'müdür', 'lider', 'lead'],
+    ];
+    foreach ($words as $position => $list) {
+        foreach ($list as $word) {
+            if (str_contains($title, $word)) {
+                return $position;
+            }
+        }
+    }
+    return 'general';
+}
+
 /**
  * Read the 5 feature values from a form and keep them inside safe limits.
  * Experience must stay inside the chosen level's range, job stability can't
