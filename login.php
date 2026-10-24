@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($user && password_verify($password, $user['password_hash'])) {
         session_regenerate_id(true);
-        $_SESSION['user'] = ['id' => $user['id'], 'name' => $user['name']];
+        $_SESSION['user'] = ['id' => $user['id'], 'name' => $user['name'], 'role' => $user['role']];
         header('Location: index.php');
         exit;
     }

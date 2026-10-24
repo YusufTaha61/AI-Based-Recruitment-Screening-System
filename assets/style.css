@@ -189,6 +189,8 @@ tr:last-child td { border-bottom: none; }
     font-family: var(--heading-font); font-weight: 700;
 }
 .user-box b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.user-info { display: flex; flex-direction: column; min-width: 0; line-height: 1.25; }
+.user-info small { color: var(--muted); font-size: .78rem; }
 .logout:hover { background: var(--red-bg); color: var(--red); }
 
 /* Page content moves right to make room for the sidebar */
@@ -197,7 +199,7 @@ tr:last-child td { border-bottom: none; }
 /* On small screens the sidebar becomes a bar on top */
 @media (max-width: 860px) {
     .sidebar { position: static; width: auto; flex-direction: row; flex-wrap: wrap; align-items: center; gap: 8px; padding: 12px 16px; border-right: none; border-bottom: 1px solid var(--border); }
-    .sidebar-title, .user-box b { display: none; }
+    .sidebar-title, .user-info { display: none; }
     .sidebar-menu { flex-direction: row; margin-left: auto; }
     .sidebar-bottom { margin-top: 0; padding-top: 0; border-top: none; display: flex; align-items: center; gap: 4px; }
     .user-box { padding: 0; }
@@ -284,3 +286,5 @@ tr:last-child td { border-bottom: none; }
 .sim-score { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: 6px 0 4px; }
 .sim-score b { font-family: var(--heading-font); font-size: 1.8rem; transition: opacity .2s; }
 #sim-form { max-width: none; }
+
+.notes { white-space: normal; background: var(--bg); border-radius: var(--radius-sm); padding: 12px 14px; font-size: .92rem; }

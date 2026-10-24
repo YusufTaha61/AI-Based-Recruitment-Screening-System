@@ -8,6 +8,7 @@ requireLogin();
 
 // Save the hiring status and notes
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    requireHr(); // only HR managers change the hiring status
     verifyCsrf();
     $id = (int) ($_POST['id'] ?? 0);
     $status = in_array($_POST['status'] ?? '', CANDIDATE_STATUSES, true) ? $_POST['status'] : 'Yeni';
@@ -95,6 +96,7 @@ require __DIR__ . '/includes/header.php';
 
         <div class="card">
             <h2>Aday Takibi</h2>
+            <?php if (isHr()): ?>
             <form class="form" method="post">
                 <?= csrfField() ?>
                 <input type="hidden" name="id" value="<?= (int) $candidate['id'] ?>">
@@ -110,6 +112,15 @@ require __DIR__ . '/includes/header.php';
                 </label></p>
                 <button class="btn" type="submit">Kaydet</button>
             </form>
+            <?php else: ?>
+                <ul class="facts">
+                    <li><span>Süreç durumu</span><?= htmlspecialchars($candidate['status']) ?></li>
+                </ul>
+                <?php if ($candidate['notes'] !== ''): ?>
+                    <p class="notes"><?= nl2br(htmlspecialchars($candidate['notes'])) ?></p>
+                <?php endif; ?>
+                <p class="muted small">Süreç durumunu ve notları sadece İK Yöneticisi değiştirebilir.</p>
+            <?php endif; ?>
         </div>
     </div>
 

@@ -20,6 +20,11 @@ $menu = [
     'evaluate.php' => ['Aday Değerlendir', '<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>'],
 ];
 
+// Evaluators can't post jobs
+if ($navUser && !isHr()) {
+    unset($menu['job_create.php']);
+}
+
 // First letter of the user's name for the avatar
 $initial = '';
 if ($navUser && preg_match('/\S/u', $navUser['name'], $m)) {
@@ -56,7 +61,10 @@ if ($navUser && preg_match('/\S/u', $navUser['name'], $m)) {
     <div class="sidebar-bottom">
         <div class="user-box">
             <span class="avatar"><?= htmlspecialchars($initial) ?></span>
-            <b><?= htmlspecialchars($navUser['name']) ?></b>
+            <span class="user-info">
+                <b><?= htmlspecialchars($navUser['name']) ?></b>
+                <small><?= USER_ROLES[$navUser['role'] ?? 'hr'] ?? '' ?></small>
+            </span>
         </div>
         <a class="logout" href="logout.php" title="Çıkış yap">
             <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
