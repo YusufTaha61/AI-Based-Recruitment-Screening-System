@@ -4,7 +4,18 @@ require __DIR__ . '/includes/auth.php';
 require __DIR__ . '/includes/helpers.php';
 require __DIR__ . '/includes/ml.php';
 require __DIR__ . '/includes/candidate_filters.php';
+require __DIR__ . '/includes/csrf.php';
 requireLogin();
+
+// Delete a candidate (only HR managers can do this)
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete'])) {
+    verifyCsrf();
+    requireHr();
+    $stmt = $db->prepare('DELETE FROM candidates WHERE id = ?');
+    $stmt->execute([(int) $_POST['delete']]);
+    header('Location: history.php');
+    exit;
+}
 
 // Every evaluated candidate (used for the summary boxes)
 $all = $db->query('SELECT score, status FROM candidates')->fetchAll(PDO::FETCH_ASSOC);
@@ -94,6 +105,9 @@ require __DIR__ . '/includes/header.php';
         <a class="btn" href="evaluate.php">İlk adayı değerlendir</a>
     </div>
 <?php else: ?>
+    <!-- The "Sil" buttons send this hidden form (a form can't be inside another form) -->
+    <form id="delete-form" method="post" action="history.php"><?= csrfField() ?></form>
+
     <!-- Ticked candidates are sent to the comparison page -->
     <form method="get" action="compare.php">
     <div class="compare-bar">
@@ -122,7 +136,14 @@ require __DIR__ . '/includes/header.php';
                     <td><?= htmlspecialchars($c['status']) ?></td>
                     <td><?= htmlspecialchars($c['evaluator']) ?></td>
                     <td><?= localDateTime($c['created_at']) ?></td>
-                    <td><a href="candidate.php?id=<?= (int) $c['id'] ?>">Detay</a></td>
+                    <td>
+                        <a href="candidate.php?id=<?= (int) $c['id'] ?>">Detay</a>
+                        <?php if (isHr()): ?>
+                            <button class="btn btn-danger btn-small" type="submit" form="delete-form"
+                                    name="delete" value="<?= (int) $c['id'] ?>"
+                                    onclick="return confirm(<?= htmlspecialchars(json_encode($c['name'] . ' silinsin mi?', JSON_UNESCAPED_UNICODE)) ?>)">Sil</button>
+                        <?php endif; ?>
+                    </td>
                 </tr>
             <?php endforeach; ?>
             </tbody>
