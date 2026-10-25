@@ -247,6 +247,7 @@ require __DIR__ . '/includes/header.php';
 
         <div class="actions">
             <a class="btn" href="evaluate.php">+ Yeni Aday</a>
+            <a class="btn btn-outline" href="report.php?id=<?= (int) $candidate['id'] ?>" target="_blank">PDF Rapor</a>
             <?php if ($candidate['application_id']): ?>
                 <a class="btn btn-outline" href="application.php?id=<?= (int) $candidate['application_id'] ?>">Başvuruyu Gör</a>
             <?php endif; ?>
