@@ -30,11 +30,22 @@ $levels = $metrics['positions'][$position]['levels'];
 $level = isset($levels[$_GET['level'] ?? '']) ? $_GET['level'] : 'junior';
 $model = $levels[$level];
 $rf = $model['random_forest'];
+$lr = $model['logistic_regression'];
+$cv = $model['cross_validation'];
 $cm = $model['confusion'];
 
 $featureLabels = array_values(CANDIDATE_FEATURES);
 $percent = fn(float $x) => '%' . number_format($x * 100, 1, ',', '');
 $modelCount = array_sum(array_map(fn($p) => count($p['levels']), $metrics['positions']));
+
+// In how many of the models is Random Forest at least as accurate as Logistic Regression?
+$rfWins = 0;
+foreach ($metrics['positions'] as $p) {
+    foreach ($p['levels'] as $m) {
+        $rfWins += $m['random_forest']['accuracy'] >= $m['logistic_regression']['accuracy'] ? 1 : 0;
+    }
+}
+$metricNames = ['accuracy' => 'Doğruluk', 'precision' => 'Kesinlik', 'recall' => 'Duyarlılık', 'f1' => 'F1 puanı'];
 ?>
 <h1>Model Raporu</h1>
 <p class="muted">
@@ -65,7 +76,7 @@ $modelCount = array_sum(array_map(fn($p) => count($p['levels']), $metrics['posit
     <b>Duyarlılık:</b> gerçekten iyi adayların yüzde kaçını yakaladı. <b>F1:</b> kesinlik ile duyarlılığın ortalaması.
 </p>
 
-<div class="result-grid">
+<div class="result-grid even">
     <div class="card">
         <h2>Karmaşıklık Matrisi</h2>
         <p class="muted small">Test verisindeki <?= (int) $model['test_size'] ?> adayın gerçek sonucu ile modelin tahmini
@@ -102,6 +113,43 @@ $modelCount = array_sum(array_map(fn($p) => count($p['levels']), $metrics['posit
                 <div class="bar bar-gap"><div style="width: <?= min(100, round($learned)) ?>%"></div></div>
             </div>
         <?php endforeach; ?>
+    </div>
+</div>
+
+<div class="result-grid even">
+    <div class="card">
+        <h2>Başka Bir Modelle Karşılaştırma</h2>
+        <p class="muted small">Random Forest'ı daha basit bir model olan Logistic Regression ile aynı test verisinde karşılaştırdık.
+            Yeşil değer o satırda daha iyi olan modeldir.</p>
+        <table class="compare-table">
+            <thead><tr><th>Ölçüt</th><th>Random Forest</th><th>Logistic Regression</th></tr></thead>
+            <tbody>
+            <?php foreach ($metricNames as $key => $name): ?>
+                <tr>
+                    <td><?= $name ?></td>
+                    <td class="<?= $rf[$key] > $lr[$key] ? 'best' : '' ?>"><?= $percent($rf[$key]) ?></td>
+                    <td class="<?= $lr[$key] > $rf[$key] ? 'best' : '' ?>"><?= $percent($lr[$key]) ?></td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+        <p class="muted small">
+            <?= $modelCount ?> modelin <?= $rfWins ?> tanesinde Random Forest en az Logistic Regression kadar doğru.
+            Fark genelde 1-2 puan. Eğitim verisi özelliklerin ağırlıklı toplamıyla üretildiği için basit bir model de iyi sonuç veriyor.
+            Random Forest'ı seçmemizin sebebi, her adayın puanını hangi özelliğin ne kadar etkilediğini açıklayabilmemiz.
+        </p>
+    </div>
+
+    <div class="card">
+        <h2>Çapraz Doğrulama (5 katlı)</h2>
+        <p class="muted small">Veriyi 5 parçaya böldük. Model her seferinde 4 parçayla eğitilip kalan 1 parçayla test edildi.
+            Böylece sonucun tek bir şanslı bölmeye bağlı olmadığını görüyoruz.</p>
+        <div class="stats">
+            <div class="stat"><b><?= $percent($cv['mean']) ?></b><span>Ortalama doğruluk</span></div>
+            <div class="stat"><b>± <?= number_format($cv['std'] * 100, 1, ',', '') ?></b><span>Sapma (puan)</span></div>
+        </div>
+        <p class="muted small">Sapma küçükse model her veri parçasında benzer başarı gösteriyor demektir.
+            Tek testteki doğruluk (<?= $percent($rf['accuracy']) ?>) ile ortalamanın yakın olması da iyi bir işaret.</p>
     </div>
 </div>
 

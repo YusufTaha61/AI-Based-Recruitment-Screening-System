@@ -354,3 +354,9 @@ tr:last-child td { border-bottom: none; }
 .bar-real div { background: #b9bccb; }
 .bar-gap { margin-top: 4px; }
 td.best a { color: var(--green); font-weight: 700; }
+/* Tables inside narrow cards: let text wrap so it stays inside the card */
+.result-grid.even { grid-template-columns: 1fr 1fr; }
+@media (max-width: 860px) { .result-grid.even { grid-template-columns: 1fr; } }
+.card .compare-table { table-layout: fixed; }
+.card .compare-table th,
+.card .compare-table td { white-space: normal; padding: 10px 12px; overflow-wrap: anywhere; }
