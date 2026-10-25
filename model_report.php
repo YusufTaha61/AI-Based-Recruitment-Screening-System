@@ -69,6 +69,37 @@ $metricNames = ['accuracy' => 'Doğruluk', 'precision' => 'Kesinlik', 'recall' =
     <?php endforeach; ?>
 </div>
 
+<!-- Level weights: how much each feature counts at each level of this position -->
+<div class="card">
+    <h2>Seviyeye Göre Değerlendirme Kıstasları — <?= htmlspecialchars($metrics['positions'][$position]['name']) ?></h2>
+    <p class="muted small">Aynı pozisyonda bile stajyer ile kıdemli bir çalışan aynı kriterlerle değerlendirilmez.
+        Tablo, her seviyede hangi özelliğin puana ne kadar etki ettiğini gösterir.</p>
+    <div class="table-wrap flat">
+        <table class="weight-table">
+            <thead>
+                <tr><th>Seviye</th><?php foreach ($featureLabels as $label): ?><th><?= $label ?></th><?php endforeach; ?></tr>
+            </thead>
+            <tbody>
+            <?php foreach ($levels as $lKey => $l): $years = $metrics['levels'][$lKey]['years']; ?>
+                <tr class="<?= $lKey === $level ? 'selected' : '' ?>">
+                    <td>
+                        <a href="?position=<?= $position ?>&level=<?= $lKey ?>"><b><?= htmlspecialchars($metrics['levels'][$lKey]['name']) ?></b></a>
+                        <span class="hint"><?= $years[0] ?>-<?= $years[1] ?> yıl</span>
+                    </td>
+                    <?php foreach ($metrics['features'] as $feature): $w = $l['weights'][$feature] * 100; ?>
+                        <td>
+                            <div class="mini-bar"><div style="width: <?= min(100, round($w * 1.6)) ?>%"></div></div>
+                            <b>%<?= round($w) ?></b>
+                        </td>
+                    <?php endforeach; ?>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+    <p class="muted small">Seçili seviye renkli gösterilir. Bir seviyeye tıklayınca o modelin ayrıntıları açılır.</p>
+</div>
+
 <div class="stats">
     <div class="stat"><b><?= $percent($rf['accuracy']) ?></b><span>Doğruluk (Accuracy)</span></div>
     <div class="stat"><b><?= $percent($rf['precision']) ?></b><span>Kesinlik (Precision)</span></div>

@@ -364,3 +364,12 @@ td.best a { color: var(--green); font-weight: 700; }
 /* Fairness check */
 .fairness-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin: 10px 0; }
 .fairness-grid .alert { margin-top: 10px; font-size: .9rem; }
+
+/* Level weights table */
+.table-wrap.flat { box-shadow: none; margin: 10px 0; }
+.weight-table td { vertical-align: middle; }
+.weight-table tr.selected { background: var(--primary-soft); }
+.weight-table tr.selected:hover { background: var(--primary-soft); }
+.mini-bar { width: 70px; height: 6px; margin-bottom: 4px; border-radius: 999px; background: var(--bg); overflow: hidden; }
+.mini-bar div { height: 100%; border-radius: 999px; background: var(--primary); }
+.weight-table .hint { margin-top: 2px; }
