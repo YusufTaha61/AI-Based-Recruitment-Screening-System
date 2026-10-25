@@ -304,3 +304,7 @@ tr:last-child td { border-bottom: none; }
 .stat { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 16px 18px; }
 .stat b { display: block; font-family: var(--heading-font); font-size: 1.7rem; }
 .stat span { color: var(--muted); font-size: .86rem; }
+
+/* Candidate history: filter form */
+.form.filters { max-width: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; align-items: end; }
+.filter-buttons { display: flex; gap: 8px; }
