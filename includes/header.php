@@ -8,6 +8,10 @@ $currentPage = basename($_SERVER['SCRIPT_NAME']);
 if (in_array($currentPage, ['apply.php', 'applicants.php', 'application.php', 'job_edit.php'], true)) {
     $currentPage = 'index.php';
 }
+// The comparison page belongs to the "Aday Geçmişi" menu item
+if ($currentPage === 'compare.php') {
+    $currentPage = 'history.php';
+}
 // Pages that belong to the "Aday Değerlendir" menu item
 if ($currentPage === 'candidate.php') {
     $currentPage = 'evaluate.php';

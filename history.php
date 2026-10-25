@@ -144,15 +144,21 @@ require __DIR__ . '/includes/header.php';
         <a class="btn" href="evaluate.php">İlk adayı değerlendir</a>
     </div>
 <?php else: ?>
-    <p class="muted small"><?= count($candidates) ?> aday gösteriliyor.</p>
+    <!-- Ticked candidates are sent to the comparison page -->
+    <form method="get" action="compare.php">
+    <div class="compare-bar">
+        <span class="muted small"><?= count($candidates) ?> aday gösteriliyor. Karşılaştırmak için 2 ile 6 aday seçin.</span>
+        <button class="btn btn-small" type="submit">Seçilenleri Karşılaştır</button>
+    </div>
     <div class="table-wrap">
         <table>
             <thead>
-                <tr><th>Aday</th><th>Pozisyon</th><th>Seviye</th><th>Puan</th><th>Karar</th><th>Durum</th><th>Değerlendiren</th><th>Tarih</th><th></th></tr>
+                <tr><th></th><th>Aday</th><th>Pozisyon</th><th>Seviye</th><th>Puan</th><th>Karar</th><th>Durum</th><th>Değerlendiren</th><th>Tarih</th><th></th></tr>
             </thead>
             <tbody>
             <?php foreach ($candidates as $c): $score = (float) $c['score']; ?>
                 <tr>
+                    <td><input type="checkbox" name="ids[]" value="<?= (int) $c['id'] ?>" aria-label="Seç"></td>
                     <td><b><?= htmlspecialchars($c['name']) ?></b></td>
                     <td><?= htmlspecialchars(CANDIDATE_POSITIONS[$c['position']] ?? $c['position']) ?></td>
                     <td><?= htmlspecialchars(CANDIDATE_LEVELS[$c['level']] ?? $c['level']) ?></td>
@@ -167,5 +173,6 @@ require __DIR__ . '/includes/header.php';
             </tbody>
         </table>
     </div>
+    </form>
 <?php endif; ?>
 <?php require __DIR__ . '/includes/footer.php'; ?>
