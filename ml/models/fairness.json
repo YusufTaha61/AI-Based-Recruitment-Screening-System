@@ -1,0 +1,181 @@
+{
+  "created": "25.10.2026 16:41",
+  "positions": {
+    "general": {
+      "age_single": {
+        "groups": {
+          "30 yaş altı": {
+            "count": 1046,
+            "rate": 0.1157
+          },
+          "30 yaş ve üstü": {
+            "count": 554,
+            "rate": 0.7978
+          }
+        },
+        "ratio": 0.145,
+        "fair": false
+      },
+      "age_levels": {
+        "groups": {
+          "30 yaş altı": {
+            "count": 5206,
+            "rate": 0.2895
+          },
+          "30 yaş ve üstü": {
+            "count": 2794,
+            "rate": 0.3869
+          }
+        },
+        "ratio": 0.7483,
+        "fair": false
+      },
+      "gender": {
+        "groups": {
+          "Erkek": {
+            "count": 3945,
+            "rate": 0.3283
+          },
+          "Kadın": {
+            "count": 4055,
+            "rate": 0.3189
+          }
+        },
+        "ratio": 0.9714,
+        "fair": true
+      }
+    },
+    "software": {
+      "age_single": {
+        "groups": {
+          "30 yaş altı": {
+            "count": 1050,
+            "rate": 0.1562
+          },
+          "30 yaş ve üstü": {
+            "count": 550,
+            "rate": 0.7182
+          }
+        },
+        "ratio": 0.2175,
+        "fair": false
+      },
+      "age_levels": {
+        "groups": {
+          "30 yaş altı": {
+            "count": 5214,
+            "rate": 0.3021
+          },
+          "30 yaş ve üstü": {
+            "count": 2786,
+            "rate": 0.3607
+          }
+        },
+        "ratio": 0.8375,
+        "fair": true
+      },
+      "gender": {
+        "groups": {
+          "Erkek": {
+            "count": 4049,
+            "rate": 0.3292
+          },
+          "Kadın": {
+            "count": 3951,
+            "rate": 0.3156
+          }
+        },
+        "ratio": 0.9587,
+        "fair": true
+      }
+    },
+    "sales": {
+      "age_single": {
+        "groups": {
+          "30 yaş altı": {
+            "count": 1059,
+            "rate": 0.1369
+          },
+          "30 yaş ve üstü": {
+            "count": 541,
+            "rate": 0.7246
+          }
+        },
+        "ratio": 0.1889,
+        "fair": false
+      },
+      "age_levels": {
+        "groups": {
+          "30 yaş altı": {
+            "count": 5226,
+            "rate": 0.3131
+          },
+          "30 yaş ve üstü": {
+            "count": 2774,
+            "rate": 0.3839
+          }
+        },
+        "ratio": 0.8156,
+        "fair": true
+      },
+      "gender": {
+        "groups": {
+          "Erkek": {
+            "count": 3998,
+            "rate": 0.3399
+          },
+          "Kadın": {
+            "count": 4002,
+            "rate": 0.3353
+          }
+        },
+        "ratio": 0.9865,
+        "fair": true
+      }
+    },
+    "manager": {
+      "age_single": {
+        "groups": {
+          "30 yaş altı": {
+            "count": 1047,
+            "rate": 0.0831
+          },
+          "30 yaş ve üstü": {
+            "count": 553,
+            "rate": 0.8481
+          }
+        },
+        "ratio": 0.098,
+        "fair": false
+      },
+      "age_levels": {
+        "groups": {
+          "30 yaş altı": {
+            "count": 5204,
+            "rate": 0.2796
+          },
+          "30 yaş ve üstü": {
+            "count": 2796,
+            "rate": 0.4027
+          }
+        },
+        "ratio": 0.6943,
+        "fair": false
+      },
+      "gender": {
+        "groups": {
+          "Erkek": {
+            "count": 4058,
+            "rate": 0.3317
+          },
+          "Kadın": {
+            "count": 3942,
+            "rate": 0.3133
+          }
+        },
+        "ratio": 0.9445,
+        "fair": true
+      }
+    }
+  }
+}

@@ -360,3 +360,7 @@ td.best a { color: var(--green); font-weight: 700; }
 .card .compare-table { table-layout: fixed; }
 .card .compare-table th,
 .card .compare-table td { white-space: normal; padding: 10px 12px; overflow-wrap: anywhere; }
+
+/* Fairness check */
+.fairness-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin: 10px 0; }
+.fairness-grid .alert { margin-top: 10px; font-size: .9rem; }

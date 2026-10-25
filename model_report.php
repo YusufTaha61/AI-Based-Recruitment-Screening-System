@@ -9,6 +9,10 @@ requireLogin();
 $metricsFile = __DIR__ . '/ml/models/metrics.json';
 $metrics = is_file($metricsFile) ? json_decode(file_get_contents($metricsFile), true) : null;
 
+// Results saved by ml/fairness.py (may not exist yet)
+$fairnessFile = __DIR__ . '/ml/models/fairness.json';
+$fairness = is_file($fairnessFile) ? json_decode(file_get_contents($fairnessFile), true) : null;
+
 $pageTitle = 'Model Raporu';
 require __DIR__ . '/includes/header.php';
 
@@ -151,6 +155,66 @@ $metricNames = ['accuracy' => 'Doğruluk', 'precision' => 'Kesinlik', 'recall' =
         <p class="muted small">Sapma küçükse model her veri parçasında benzer başarı gösteriyor demektir.
             Tek testteki doğruluk (<?= $percent($rf['accuracy']) ?>) ile ortalamanın yakın olması da iyi bir işaret.</p>
     </div>
+</div>
+
+<?php $fair = $fairness['positions'][$position] ?? null; ?>
+<div class="card">
+    <h2>Adillik (Bias) Kontrolü — <?= htmlspecialchars($metrics['positions'][$position]['name']) ?></h2>
+    <?php if (!$fair): ?>
+        <p>Adillik kontrolü henüz yapılmamış. Terminalde <code>ml</code> klasörüne girip şu komutu çalıştırın:</p>
+        <pre class="cv-text">py fairness.py</pre>
+    <?php else: ?>
+        <p class="muted small">
+            Modele yaş ve cinsiyet bilgisi <b>verilmiyor</b>. Yine de dolaylı yoldan bir gruba haksızlık yapıyor mu diye
+            yeni test adaylarının kısa listeye alınma oranlarını karşılaştırdık.
+            <b>4/5 kuralına</b> göre en düşük oran, en yüksek oranın en az %80'i olmalı.
+        </p>
+
+        <?php
+        // One block for each check: title => results
+        $checks = [
+            'Yaş · Tek model (herkes aynı modelde yarışırsa)' => $fair['age_single'],
+            'Yaş · Seviyeli sistem (bu proje)' => $fair['age_levels'],
+            'Cinsiyet · Seviyeli sistem' => $fair['gender'],
+        ];
+        ?>
+        <div class="fairness-grid">
+            <?php foreach ($checks as $title => $check): ?>
+                <div>
+                    <p><b><?= $title ?></b></p>
+                    <?php foreach ($check['groups'] as $group => $g): ?>
+                        <div class="bar-row">
+                            <div class="bar-label">
+                                <span><?= htmlspecialchars($group) ?> (<?= (int) $g['count'] ?> aday)</span>
+                                <b><?= $percent($g['rate']) ?></b>
+                            </div>
+                            <div class="bar"><div style="width: <?= round($g['rate'] * 100) ?>%"></div></div>
+                        </div>
+                    <?php endforeach; ?>
+                    <?php if ($check['ratio'] !== null): ?>
+                        <p class="alert <?= $check['fair'] ? 'alert-success' : 'alert-warning' ?>">
+                            Oran: <b><?= number_format($check['ratio'], 2, ',', '') ?></b> —
+                            <?= $check['fair'] ? '4/5 kuralına uygun.' : '4/5 kuralının altında.' ?>
+                        </p>
+                    <?php endif; ?>
+                </div>
+            <?php endforeach; ?>
+        </div>
+
+        <p class="muted small">
+            <b>Neden fark var?</b> Model yaşı bilmiyor ama tecrübeyi biliyor. Herkes aynı modelle değerlendirilirse tecrübeli
+            (genelde daha yaşlı) adaylar öne geçer, gençler neredeyse hiç seçilmez. Buna <b>dolaylı ayrımcılık (proxy bias)</b> denir.
+            Adayları kendi seviyesindekilerle karşılaştırınca oran
+            <b><?= number_format($fair['age_single']['ratio'], 2, ',', '') ?></b>'den
+            <b><?= number_format($fair['age_levels']['ratio'], 2, ',', '') ?></b>'e çıkıyor.
+            <?php if (!$fair['age_levels']['fair']): ?>
+                Bu pozisyonda tecrübenin ağırlığı yüksek olduğu için seviye içinde de küçük bir fark kalıyor;
+                son karar verilirken bu göz önünde bulundurulmalı.
+            <?php endif; ?>
+            Cinsiyet modelde hiç kullanılmadığı için iki grubun oranı birbirine yakın.
+            Son kontrol: <?= htmlspecialchars($fairness['created']) ?>.
+        </p>
+    <?php endif; ?>
 </div>
 
 <h2>Bütün Modeller</h2>
