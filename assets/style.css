@@ -298,3 +298,9 @@ tr:last-child td { border-bottom: none; }
 .btn-small { padding: 7px 14px; font-size: .86rem; }
 .btn-danger { background: var(--red-bg); color: var(--red); box-shadow: none; }
 .btn-danger:hover { background: var(--red); color: #fff; }
+
+/* Candidate history: summary boxes */
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; margin: 18px 0; }
+.stat { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 16px 18px; }
+.stat b { display: block; font-family: var(--heading-font); font-size: 1.7rem; }
+.stat span { color: var(--muted); font-size: .86rem; }
