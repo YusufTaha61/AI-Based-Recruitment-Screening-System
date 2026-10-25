@@ -78,6 +78,74 @@ ml/models/             The 16 trained models, metrics.json and fairness.json
 ornekler/              Fictional sample CVs for testing (see ornekler/README.md)
 ```
 
+## Setup
+
+### Requirements
+- **PHP 8.1+** with the `pdo_sqlite` extension enabled
+- **Python 3.10+**
+- Git
+
+### 1. Get the code
+```
+git clone https://github.com/YusufTaha61/AI-Based-Recruitment-Screening-System.git
+cd AI-Based-Recruitment-Screening-System
+```
+
+### 2. Install the Python packages
+The web app looks for Python in `ml/.venv` first, so create the virtual environment there.
+
+Windows (PowerShell):
+```
+py -m venv ml\.venv
+ml\.venv\Scripts\pip install -r ml\requirements.txt
+```
+
+macOS / Linux:
+```
+python3 -m venv ml/.venv
+ml/.venv/bin/pip install -r ml/requirements.txt
+```
+
+### 3. Train the models
+The trained model files are not stored in Git, so train them once (takes about a minute).
+
+Windows:
+```
+cd ml
+.venv\Scripts\python train.py
+.venv\Scripts\python train_candidates.py
+.venv\Scripts\python fairness.py
+cd ..
+```
+
+macOS / Linux: the same commands with `.venv/bin/python`.
+
+- `train.py` → the model that scores CVs against job postings (`ml/model.joblib`)
+- `train_candidates.py` → the 16 candidate models and `ml/models/metrics.json`
+- `fairness.py` → the fairness check, `ml/models/fairness.json`
+
+### 4. Create the database
+```
+php setup.php
+```
+
+### 5. Start the server
+```
+php -S 127.0.0.1:8000
+```
+Open **http://127.0.0.1:8000/index.php** in the browser and log in with the demo account: `demo@akilliik.com` / `demo123` (the login page can fill it in for you). Stop the server with `Ctrl + C`.
+
+If port 8000 is busy, use another one, for example `php -S 127.0.0.1:8080` and http://127.0.0.1:8080/index.php.
+
+### 6. Try it
+- Sample CVs for testing are in `ornekler/` (see `ornekler/README.md` for which position and level to choose).
+- Optional: if you have the old demo project next to this folder, `php import_old.php` copies its 17 candidates into the new database.
+
+### Troubleshooting
+- **"Model çalıştırılamadı"** (model could not run): Python or the packages are missing. Check that `ml/.venv` exists and step 2 finished without errors.
+- **"could not find driver"**: enable `extension=pdo_sqlite` in your `php.ini`.
+- **Model report says the model is not trained:** run step 3 again.
+
 ## Score thresholds
 
 | Score | Decision |
