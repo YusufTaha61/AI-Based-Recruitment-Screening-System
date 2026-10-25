@@ -78,6 +78,14 @@ const CANDIDATE_LEVEL_YEARS = [
     'senior' => [8, 20],
 ];
 
+// Short description of each level, shown under the level box on the evaluation form
+const CANDIDATE_LEVEL_INFO = [
+    'intern' => 'Öğrenci veya staj başvurusu. Eğitim, teknik beceri ve iletişim öne çıkar, iş istikrarı dikkate alınmaz.',
+    'junior' => '0-2 yıl tecrübe. Eğitim ve potansiyel önemli, tecrübenin etkisi az.',
+    'mid' => '2-8 yıl tecrübe. Bütün kriterler dengeli değerlendirilir.',
+    'senior' => '8 yıldan fazla tecrübe. Tecrübe, iş istikrarı ve iletişim daha önemli.',
+];
+
 // Same order as FEATURES in ml/candidate_model.py
 const CANDIDATE_FEATURES = [
     'education_level' => 'Eğitim',
