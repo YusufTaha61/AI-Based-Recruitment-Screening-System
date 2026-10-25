@@ -3,6 +3,7 @@ require __DIR__ . '/includes/db.php';
 require __DIR__ . '/includes/auth.php';
 require __DIR__ . '/includes/helpers.php';
 require __DIR__ . '/includes/ml.php';
+require __DIR__ . '/includes/candidate_filters.php';
 requireLogin();
 
 // Every evaluated candidate (used for the summary boxes)
@@ -14,62 +15,11 @@ $shortlisted = count(array_filter($all, fn($c) => (float) $c['score'] >= 70));
 $hired = count(array_filter($all, fn($c) => $c['status'] === 'İşe Alındı'));
 $average = $total ? array_sum(array_column($all, 'score')) / $total : 0;
 
-// Filters chosen in the form (empty = show all)
-$search = trim($_GET['q'] ?? '');
-$decision = $_GET['decision'] ?? '';
-$position = $_GET['position'] ?? '';
-$level = $_GET['level'] ?? '';
-$status = $_GET['status'] ?? '';
-$sort = $_GET['sort'] ?? 'newest';
-
-// Build the WHERE part step by step; values go in $params, never into the SQL text
-$where = [];
-$params = [];
-if ($search !== '') {
-    $where[] = 'c.name LIKE ?';
-    $params[] = '%' . $search . '%';
-}
-// Decision uses the same score limits as decisionLabel()
-$decisionRules = [
-    'high' => 'c.score >= 70',
-    'medium' => 'c.score >= 40 AND c.score < 70',
-    'low' => 'c.score < 40',
-];
-if (isset($decisionRules[$decision])) {
-    $where[] = $decisionRules[$decision];
-}
-if (isset(CANDIDATE_POSITIONS[$position])) {
-    $where[] = 'c.position = ?';
-    $params[] = $position;
-}
-if (isset(CANDIDATE_LEVELS[$level])) {
-    $where[] = 'c.level = ?';
-    $params[] = $level;
-}
-if (in_array($status, CANDIDATE_STATUSES, true)) {
-    $where[] = 'c.status = ?';
-    $params[] = $status;
-}
-
-// Only these sort options are allowed
-$sortOptions = [
-    'newest' => ['En yeni önce', 'c.created_at DESC, c.id DESC'],
-    'score' => ['Puana göre (yüksekten)', 'c.score DESC'],
-    'name' => ['Ada göre (A-Z)', 'c.name COLLATE NOCASE'],
-];
-if (!isset($sortOptions[$sort])) {
-    $sort = 'newest';
-}
-
-$sql = "SELECT c.id, c.name, c.position, c.level, c.score, c.status, c.created_at,
-               COALESCE(u.name, 'Silinmiş kullanıcı') AS evaluator
-        FROM candidates c
-        LEFT JOIN users u ON u.id = c.user_id"
-    . ($where ? ' WHERE ' . implode(' AND ', $where) : '')
-    . ' ORDER BY ' . $sortOptions[$sort][1];
-$stmt = $db->prepare($sql);
-$stmt->execute($params);
-$candidates = $stmt->fetchAll(PDO::FETCH_ASSOC);
+// Candidates that match the filters (the same code is used by the CSV export)
+[$candidates, $filters] = filteredCandidates($db, $_GET);
+['q' => $search, 'decision' => $decision, 'position' => $position,
+ 'level' => $level, 'status' => $status, 'sort' => $sort] = $filters;
+$sortOptions = CANDIDATE_SORTS;
 
 // Helper: "selected" for the option that is currently chosen
 $sel = fn($current, $value) => (string) $current === (string) $value ? 'selected' : '';
@@ -148,7 +98,12 @@ require __DIR__ . '/includes/header.php';
     <form method="get" action="compare.php">
     <div class="compare-bar">
         <span class="muted small"><?= count($candidates) ?> aday gösteriliyor. Karşılaştırmak için 2 ile 6 aday seçin.</span>
-        <button class="btn btn-small" type="submit">Seçilenleri Karşılaştır</button>
+        <span class="filter-buttons">
+            <button class="btn btn-small" type="submit">Seçilenleri Karşılaştır</button>
+            <?php if (isHr()): ?>
+                <a class="btn btn-small btn-outline" href="export.php?<?= htmlspecialchars(http_build_query($filters)) ?>">Excel'e Aktar (CSV)</a>
+            <?php endif; ?>
+        </span>
     </div>
     <div class="table-wrap">
         <table>
