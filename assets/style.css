@@ -337,3 +337,20 @@ tr:last-child td { border-bottom: none; }
     .report-page { margin: 0; max-width: none; padding: 0; border: none; box-shadow: none; }
     * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
+
+/* Model report */
+.tabs { display: flex; gap: 6px; flex-wrap: wrap; margin: 16px 0 8px; }
+.tabs a { padding: 8px 14px; border-radius: 999px; background: var(--card); border: 1px solid var(--border); color: var(--muted); text-decoration: none; font-weight: 600; font-size: .9rem; }
+.tabs a:hover { color: var(--text); }
+.tabs a.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+.tabs-small a { padding: 6px 12px; font-size: .84rem; }
+.confusion { width: 100%; margin: 6px 0 10px; }
+.confusion th, .confusion td { text-align: center; white-space: normal; }
+.confusion td { padding: 16px 10px; }
+.confusion td b { display: block; font-family: var(--heading-font); font-size: 1.6rem; }
+.confusion td span { font-size: .8rem; }
+.confusion .right { background: var(--green-bg); color: var(--green); }
+.confusion .wrong { background: var(--red-bg); color: var(--red); }
+.bar-real div { background: #b9bccb; }
+.bar-gap { margin-top: 4px; }
+td.best a { color: var(--green); font-weight: 700; }
