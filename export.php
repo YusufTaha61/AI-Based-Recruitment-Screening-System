@@ -7,7 +7,7 @@ require __DIR__ . '/includes/candidate_filters.php';
 requireHr(); // only HR managers can download the candidate list
 
 // Same filters as the history page
-[$candidates] = filteredCandidates($db, $_GET);
+[$candidates] = filteredCandidates($db, $_GET, currentTeamId($db));
 
 // Excel could run a cell that starts with = + - @ as a formula; add ' in front
 function csvCell($value): string

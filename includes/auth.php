@@ -37,3 +37,15 @@ function requireHr(): void
         exit('Bu işlemi sadece İK Yöneticisi yapabilir.');
     }
 }
+
+// The HR team of the logged-in user. Each team only sees its own candidates.
+function currentTeamId(PDO $db): int
+{
+    if (!isset($_SESSION['user']['team_id'])) {
+        // Sessions from before teams existed: look it up once
+        $stmt = $db->prepare('SELECT team_id FROM users WHERE id = ?');
+        $stmt->execute([currentUser()['id'] ?? 0]);
+        $_SESSION['user']['team_id'] = (int) $stmt->fetchColumn();
+    }
+    return (int) $_SESSION['user']['team_id'];
+}

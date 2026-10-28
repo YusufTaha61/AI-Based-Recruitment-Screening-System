@@ -29,8 +29,8 @@ $features = $result['features'] ?? null;
 $score = $app['score'] === null ? null : (float) $app['score'];
 
 // Evaluations made for this application
-$stmt = $db->prepare('SELECT id, position, level, score, status, created_at FROM candidates WHERE application_id = ? ORDER BY id DESC');
-$stmt->execute([$app['id']]);
+$stmt = $db->prepare('SELECT id, position, level, score, status, created_at FROM candidates WHERE application_id = ? AND team_id = ? ORDER BY id DESC');
+$stmt->execute([$app['id'], currentTeamId($db)]);
 $evaluations = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 $pageTitle = 'Başvuru - ' . $app['name'];

@@ -11,14 +11,16 @@ requireLogin();
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete'])) {
     verifyCsrf();
     requireHr();
-    $stmt = $db->prepare('DELETE FROM candidates WHERE id = ?');
-    $stmt->execute([(int) $_POST['delete']]);
+    $stmt = $db->prepare('DELETE FROM candidates WHERE id = ? AND team_id = ?');
+    $stmt->execute([(int) $_POST['delete'], currentTeamId($db)]);
     header('Location: history.php');
     exit;
 }
 
-// Every evaluated candidate (used for the summary boxes)
-$all = $db->query('SELECT score, status FROM candidates')->fetchAll(PDO::FETCH_ASSOC);
+// Every candidate of this team (used for the summary boxes)
+$stmt = $db->prepare('SELECT score, status FROM candidates WHERE team_id = ?');
+$stmt->execute([currentTeamId($db)]);
+$all = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Small summary boxes at the top of the page
 $total = count($all);
@@ -27,7 +29,7 @@ $hired = count(array_filter($all, fn($c) => $c['status'] === 'İşe Alındı'));
 $average = $total ? array_sum(array_column($all, 'score')) / $total : 0;
 
 // Candidates that match the filters (the same code is used by the CSV export)
-[$candidates, $filters] = filteredCandidates($db, $_GET);
+[$candidates, $filters] = filteredCandidates($db, $_GET, currentTeamId($db));
 ['q' => $search, 'decision' => $decision, 'position' => $position,
  'level' => $level, 'status' => $status, 'sort' => $sort] = $filters;
 $sortOptions = CANDIDATE_SORTS;
@@ -119,25 +121,28 @@ require __DIR__ . '/includes/header.php';
             <?php endif; ?>
         </span>
     </div>
+    <!-- Related values share one cell, so the whole table fits on the screen without scrolling sideways -->
     <div class="table-wrap">
-        <table>
+        <table class="history-table">
             <thead>
-                <tr><th></th><th>Aday</th><th>Pozisyon</th><th>Seviye</th><th>Puan</th><th>Karar</th><th>Durum</th><th>Değerlendiren</th><th>Tarih</th><th></th></tr>
+                <tr><th></th><th>Aday</th><th>Puan</th><th>Durum</th><th>Tarih</th><th></th></tr>
             </thead>
             <tbody>
             <?php foreach ($candidates as $c): $score = (float) $c['score']; ?>
                 <tr>
                     <td><input type="checkbox" name="ids[]" value="<?= (int) $c['id'] ?>" aria-label="Seç"></td>
-                    <td><b><?= htmlspecialchars($c['name']) ?></b></td>
-                    <td><?= htmlspecialchars(CANDIDATE_POSITIONS[$c['position']] ?? $c['position']) ?></td>
-                    <td><?= htmlspecialchars(CANDIDATE_LEVELS[$c['level']] ?? $c['level']) ?></td>
-                    <td><?= scoreBadge($score) ?></td>
-                    <td><?= decisionLabel($score) ?></td>
-                    <td><?= htmlspecialchars($c['status']) ?></td>
-                    <td><?= htmlspecialchars($c['evaluator']) ?></td>
-                    <td><?= localDateTime($c['created_at']) ?></td>
                     <td>
-                        <a href="candidate.php?id=<?= (int) $c['id'] ?>">Detay</a>
+                        <b><?= htmlspecialchars($c['name']) ?></b>
+                        <span class="hint">
+                            <?= htmlspecialchars(CANDIDATE_POSITIONS[$c['position']] ?? $c['position']) ?> ·
+                            <?= htmlspecialchars(CANDIDATE_LEVELS[$c['level']] ?? $c['level']) ?>
+                        </span>
+                    </td>
+                    <td><?= scoreBadge($score) ?><span class="hint"><?= decisionLabel($score) ?></span></td>
+                    <td><?= htmlspecialchars($c['status']) ?></td>
+                    <td class="date"><?= localDateTime($c['created_at']) ?><span class="hint"><?= htmlspecialchars($c['evaluator']) ?></span></td>
+                    <td class="row-actions">
+                        <a class="btn btn-outline btn-small" href="candidate.php?id=<?= (int) $c['id'] ?>">Detay</a>
                         <?php if (isHr()): ?>
                             <button class="btn btn-danger btn-small" type="submit" form="delete-form"
                                     name="delete" value="<?= (int) $c['id'] ?>"

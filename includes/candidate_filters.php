@@ -18,9 +18,10 @@ const DECISION_RULES = [
 
 /**
  * Reads the filters from the address (?q=...&decision=...) and returns
+ * the candidates of one team as
  * [list of candidates, the filters that were used].
  */
-function filteredCandidates(PDO $db, array $get): array
+function filteredCandidates(PDO $db, array $get, int $teamId): array
 {
     $filters = [
         'q' => trim($get['q'] ?? ''),
@@ -32,8 +33,9 @@ function filteredCandidates(PDO $db, array $get): array
     ];
 
     // Build the WHERE part step by step; values go in $params, never into the SQL text
-    $where = [];
-    $params = [];
+    // Only the candidates of the user's own team
+    $where = ['c.team_id = ?'];
+    $params = [$teamId];
     if ($filters['q'] !== '') {
         $where[] = 'c.name LIKE ?';
         $params[] = '%' . $filters['q'] . '%';
@@ -57,7 +59,7 @@ function filteredCandidates(PDO $db, array $get): array
     $sql = "SELECT c.*, COALESCE(u.name, 'Silinmiş kullanıcı') AS evaluator
             FROM candidates c
             LEFT JOIN users u ON u.id = c.user_id"
-        . ($where ? ' WHERE ' . implode(' AND ', $where) : '')
+        . ' WHERE ' . implode(' AND ', $where)
         . ' ORDER BY ' . CANDIDATE_SORTS[$filters['sort']][1];
     $stmt = $db->prepare($sql);
     $stmt->execute($params);

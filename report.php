@@ -9,9 +9,9 @@ requireLogin();
 $stmt = $db->prepare(
     "SELECT c.*, COALESCE(u.name, 'Silinmiş kullanıcı') AS evaluator FROM candidates c
      LEFT JOIN users u ON u.id = c.user_id
-     WHERE c.id = ?"
+     WHERE c.id = ? AND c.team_id = ?"
 );
-$stmt->execute([(int) ($_GET['id'] ?? 0)]);
+$stmt->execute([(int) ($_GET['id'] ?? 0), currentTeamId($db)]);
 $c = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$c) {

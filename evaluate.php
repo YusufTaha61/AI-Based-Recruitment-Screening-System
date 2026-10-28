@@ -64,12 +64,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $error = $result['error'];
         } else {
             $stmt = $db->prepare(
-                'INSERT INTO candidates (user_id, application_id, name, position, level, education_level, years_experience,
+                'INSERT INTO candidates (user_id, team_id, application_id, name, position, level, education_level, years_experience,
                     technical_skill, communication_skill, job_stability, score, baseline, contributions, importance)
-                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
             );
             $stmt->execute([
-                currentUser()['id'], $application['id'] ?? null, $name, $position, $level,
+                currentUser()['id'], currentTeamId($db), $application['id'] ?? null, $name, $position, $level,
                 $values['education_level'], $values['years_experience'], $values['technical_skill'],
                 $values['communication_skill'], $values['job_stability'],
                 $result['score'], $result['baseline'],

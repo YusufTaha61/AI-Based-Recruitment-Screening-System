@@ -25,7 +25,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($user && password_verify($password, $user['password_hash'])) {
             clearFailedLogins($db, $email);
             session_regenerate_id(true);
-            $_SESSION['user'] = ['id' => $user['id'], 'name' => $user['name'], 'role' => $user['role']];
+            $_SESSION['user'] = ['id' => $user['id'], 'name' => $user['name'], 'role' => $user['role'],
+                'team_id' => (int) $user['team_id']];
             header('Location: index.php');
             exit;
         }

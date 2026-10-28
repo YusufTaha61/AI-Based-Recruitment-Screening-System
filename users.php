@@ -38,8 +38,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } elseif ($check->fetch()) {
             $error = 'Bu e-posta zaten kayıtlı.';
         } else {
-            $stmt = $db->prepare('INSERT INTO users (name, email, password_hash, role, created_by) VALUES (?, ?, ?, ?, ?)');
-            $stmt->execute([$name, $email, password_hash($password, PASSWORD_DEFAULT), $role, $me['id']]);
+            $stmt = $db->prepare('INSERT INTO users (name, email, password_hash, role, created_by, team_id) VALUES (?, ?, ?, ?, ?, ?)');
+            $stmt->execute([$name, $email, password_hash($password, PASSWORD_DEFAULT), $role, $me['id'], currentTeamId($db)]);
             header('Location: users.php?message=' . urlencode($name . ' eklendi.'));
             exit;
         }

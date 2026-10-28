@@ -14,7 +14,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $status = in_array($_POST['status'] ?? '', CANDIDATE_STATUSES, true) ? $_POST['status'] : 'Yeni';
     $notes = mb_substr(trim($_POST['notes'] ?? ''), 0, 2000);
 
-    $db->prepare('UPDATE candidates SET status = ?, notes = ? WHERE id = ?')->execute([$status, $notes, $id]);
+    $db->prepare('UPDATE candidates SET status = ?, notes = ? WHERE id = ? AND team_id = ?')
+        ->execute([$status, $notes, $id, currentTeamId($db)]);
     header('Location: candidate.php?id=' . $id . '&saved=1');
     exit;
 }
@@ -23,9 +24,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $stmt = $db->prepare(
     "SELECT c.*, COALESCE(u.name, 'Silinmiş kullanıcı') AS evaluator FROM candidates c
      LEFT JOIN users u ON u.id = c.user_id
-     WHERE c.id = ?"
+     WHERE c.id = ? AND c.team_id = ?"
 );
-$stmt->execute([(int) ($_GET['id'] ?? 0)]);
+$stmt->execute([(int) ($_GET['id'] ?? 0), currentTeamId($db)]);
 $candidate = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$candidate) {

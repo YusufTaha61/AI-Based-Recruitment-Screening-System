@@ -37,10 +37,10 @@ $ownerId = (int) $owner->fetchColumn();
 
 $exists = $db->prepare('SELECT id FROM candidates WHERE name = ? AND created_at = ?');
 $insert = $db->prepare(
-    'INSERT INTO candidates (user_id, name, position, level, education_level, years_experience,
+    'INSERT INTO candidates (user_id, team_id, name, position, level, education_level, years_experience,
         technical_skill, communication_skill, job_stability, score, baseline, contributions, importance,
         status, notes, created_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+     VALUES (?, (SELECT team_id FROM users WHERE id = ?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
 );
 
 $added = $skipped = $failed = 0;
@@ -85,7 +85,7 @@ foreach ($old->query('SELECT * FROM adaylar ORDER BY tarih') as $row) {
     $status = in_array($row['durum'], CANDIDATE_STATUSES, true) ? $row['durum'] : 'Yeni';
 
     $insert->execute([
-        $ownerId, $row['ad'], $position, $level,
+        $ownerId, $ownerId, $row['ad'], $position, $level,
         $values['education_level'], $values['years_experience'], $values['technical_skill'],
         $values['communication_skill'], $values['job_stability'],
         $result['score'], $result['baseline'],

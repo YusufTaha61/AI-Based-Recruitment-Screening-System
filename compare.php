@@ -13,8 +13,8 @@ $candidates = [];
 if ($ids) {
     // One "?" for each id: WHERE id IN (?, ?, ?)
     $marks = implode(', ', array_fill(0, count($ids), '?'));
-    $stmt = $db->prepare("SELECT * FROM candidates WHERE id IN ($marks) ORDER BY score DESC");
-    $stmt->execute($ids);
+    $stmt = $db->prepare("SELECT * FROM candidates WHERE id IN ($marks) AND team_id = ? ORDER BY score DESC");
+    $stmt->execute([...$ids, currentTeamId($db)]);
     $candidates = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 

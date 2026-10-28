@@ -22,6 +22,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             $stmt = $db->prepare('INSERT INTO users (name, email, password_hash) VALUES (?, ?, ?)');
             $stmt->execute([$name, $email, password_hash($password, PASSWORD_DEFAULT)]);
+            // A new sign-up starts their own team, so they don't see other teams' candidates
+            $db->prepare('UPDATE users SET team_id = id WHERE id = ?')->execute([$db->lastInsertId()]);
             header('Location: login.php');
             exit;
         }
