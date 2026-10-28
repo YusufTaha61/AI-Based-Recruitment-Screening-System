@@ -3,6 +3,7 @@ require __DIR__ . '/includes/db.php';
 require __DIR__ . '/includes/auth.php';
 require __DIR__ . '/includes/csrf.php';
 require __DIR__ . '/includes/demo.php';
+require __DIR__ . '/includes/login_limit.php';
 
 ensureDemoAccount($db);
 
@@ -13,17 +14,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
 
-    $stmt = $db->prepare('SELECT * FROM users WHERE email = ?');
-    $stmt->execute([$email]);
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    $lockMinutes = loginLockMinutes($db, $email);
+    if ($lockMinutes > 0) {
+        $error = 'Çok fazla hatalı deneme yapıldı. Lütfen ' . $lockMinutes . ' dakika sonra tekrar deneyin.';
+    } else {
+        $stmt = $db->prepare('SELECT * FROM users WHERE email = ?');
+        $stmt->execute([$email]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($user && password_verify($password, $user['password_hash'])) {
-        session_regenerate_id(true);
-        $_SESSION['user'] = ['id' => $user['id'], 'name' => $user['name'], 'role' => $user['role']];
-        header('Location: index.php');
-        exit;
+        if ($user && password_verify($password, $user['password_hash'])) {
+            clearFailedLogins($db, $email);
+            session_regenerate_id(true);
+            $_SESSION['user'] = ['id' => $user['id'], 'name' => $user['name'], 'role' => $user['role']];
+            header('Location: index.php');
+            exit;
+        }
+        recordFailedLogin($db, $email);
+        $error = 'E-posta veya şifre hatalı.';
     }
-    $error = 'E-posta veya şifre hatalı.';
 }
 
 $pageTitle = 'Giriş Yap';

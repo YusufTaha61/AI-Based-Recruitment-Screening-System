@@ -52,3 +52,10 @@ CREATE TABLE IF NOT EXISTS candidates (
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (application_id) REFERENCES applications(id)
 );
+
+CREATE TABLE IF NOT EXISTS login_attempts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    email TEXT NOT NULL,
+    ip TEXT NOT NULL,
+    attempted_at TEXT DEFAULT CURRENT_TIMESTAMP
+);
