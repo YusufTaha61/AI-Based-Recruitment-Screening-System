@@ -14,7 +14,8 @@ A web app that helps HR teams screen job candidates with machine learning. Rando
 - **Reports:** CSV export for Excel and a printable PDF report for each candidate
 - **Model report:** accuracy, precision, recall, F1, confusion matrix, 5-fold cross-validation and comparison with Logistic Regression
 - **Fairness check:** age and gender shortlist rates compared with the 4/5 rule (level-based models raise the age ratio from about 0.1-0.2 to 0.7-0.85)
-- **Roles:** HR Manager and Evaluator, with a demo account on the login page
+- **Roles and teams:** HR Manager and Evaluator; each HR team only sees its own candidates. A demo account is on the login page
+- **Security:** CSRF tokens, safe session cookie, security headers, login lock after 5 wrong passwords, and the database and CVs can't be opened from the browser
 
 ## Tech stack
 
@@ -55,16 +56,18 @@ PHP 8 · Python · scikit-learn · pandas · pypdf · SQLite · HTML / CSS / Jav
 4. Create the database and start the server:
    ```
    php setup.php
-   php -S 127.0.0.1:8000
+   php -S 127.0.0.1:8000 router.php
    ```
-5. Open http://127.0.0.1:8000/index.php and log in with `demo@akilliik.com` / `demo123`. Stop the server with `Ctrl + C`.
+   `router.php` only lets the browser open the pages and `assets/`, so the database, the uploaded CVs and the code folders stay private.
+5. Open http://127.0.0.1:8000/index.php and log in with `demo.yonetici@akilliik.com` / `Akilli-IK-Demo-7342`. Stop the server with `Ctrl + C`.
 
 Sample CVs for testing are in `ornekler/`.
 
 **Troubleshooting**
 - *"Model çalıştırılamadı"*: Python or its packages are missing, repeat step 2.
 - *"could not find driver"*: enable `extension=pdo_sqlite` in `php.ini`.
-- *Port 8000 is busy*: use another port, e.g. `php -S 127.0.0.1:8080`.
+- *Port 8000 is busy*: use another port, e.g. `php -S 127.0.0.1:8080 router.php`.
+- *"Çok fazla hatalı deneme yapıldı"*: 5 wrong passwords lock that e-mail for 15 minutes, wait and try again.
 
 </details>
 
@@ -78,8 +81,9 @@ evaluate.php, candidate.php          Candidate evaluation and result
 history.php, compare.php             History, filters, comparison
 export.php, report.php               CSV export and PDF report
 model_report.php                     Model performance and fairness
-users.php, login.php, register.php   Users and roles
-includes/                            Database, auth, CSRF, helpers, layout
+users.php, login.php, register.php   Users, roles and teams
+router.php                           Blocks browser access to private files
+includes/                            Database, auth, session, CSRF, security headers, helpers, layout
 ml/                                  Python: training, scoring, CV reading, fairness
 ml/models/                           Trained models, metrics.json, fairness.json
 ornekler/                            Fictional sample CVs
