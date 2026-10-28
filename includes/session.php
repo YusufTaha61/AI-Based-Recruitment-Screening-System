@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/security_headers.php';
+
 // Starts the session with a safer cookie.
 // httponly: JavaScript can't read the cookie, so an injected script can't steal it.
 // samesite : the browser doesn't send the cookie with forms from other websites.
