@@ -2,9 +2,7 @@
 // CSRF protection: every form sends a secret token that only this site knows.
 // A fake form on another website can't know it, so its request is rejected.
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+require_once __DIR__ . '/session.php';
 
 function csrfToken(): string
 {
