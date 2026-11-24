@@ -4,6 +4,8 @@ A web app that helps HR teams screen job candidates with machine learning. Rando
 
 > This system only supports decisions. The final hiring decision always belongs to a human. The interface is in Turkish.
 
+![Candidate result with fit score and explanation](docs/screenshots/candidate-result.png)
+
 ## Features
 
 - **Job postings and online applications:** candidates apply with a PDF/TXT CV, and applicants are ranked by how well their CV matches the job's required skills
@@ -16,6 +18,14 @@ A web app that helps HR teams screen job candidates with machine learning. Rando
 - **Fairness check:** age and gender shortlist rates compared with the 4/5 rule (level-based models raise the age ratio from about 0.1-0.2 to 0.7-0.85)
 - **Roles and teams:** HR Manager and Evaluator; each HR team only sees its own candidates. A demo account is on the login page
 - **Security:** CSRF tokens, safe session cookie, security headers, login lock after 5 wrong passwords, and the database and CVs can't be opened from the browser
+
+## Screenshots
+
+| Applicants ranked by CV match | Candidate history |
+|---|---|
+| ![Applicants](docs/screenshots/applicants.png) | ![Candidate history](docs/screenshots/candidate-history.png) |
+
+![Model report](docs/screenshots/model-report.png)
 
 ## Tech stack
 
